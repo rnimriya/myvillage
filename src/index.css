@@ -1,0 +1,94 @@
+@import "tailwindcss";
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap');
+
+@theme {
+  /* Phone mockup frame (kept dark) */
+  --color-forest-teal-800: #043f47;
+  --color-forest-teal-900: #022b30;
+  --color-forest-teal-950: #01191d;
+
+  /* App Light Palette */
+  --color-coral:       #E8534A;
+  --color-coral-dark:  #C43B34;
+  --color-coral-light: #FEF0EF;
+  --color-coral-muted: #F9D5D3;
+
+  --color-app-bg:     #F4F6F8;
+  --color-app-card:   #FFFFFF;
+  --color-app-border: #E5E7EB;
+  --color-app-text:   #1C2526;
+  --color-app-muted:  #6B7280;
+  --color-app-subtle: #9CA3AF;
+
+  /* Accent palette */
+  --color-sky-blue:       #4B91F1;
+  --color-sky-blue-light: #EFF6FF;
+  --color-amber-gold:     #F59E0B;
+  --color-amber-light:    #FFFBEB;
+  --color-emerald:        #10B981;
+  --color-emerald-light:  #ECFDF5;
+
+  /* Legacy aliases so SuperAdmin still compiles */
+  --color-neon-green: #E8534A;
+  --color-sky-cyan:   #4B91F1;
+  --color-slate-gray: #9CA3AF;
+
+  --font-sans: 'Plus Jakarta Sans', sans-serif;
+}
+
+@utility no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  &::-webkit-scrollbar { display: none; }
+}
+
+@utility active-press {
+  transition: transform 0.08s cubic-bezier(0.4, 0, 0.2, 1);
+  &:active { transform: scale(0.96); }
+}
+
+@utility chevron-tag {
+  clip-path: polygon(0% 0%, 88% 0%, 100% 50%, 88% 100%, 0% 100%);
+}
+
+body {
+  background-color: var(--color-forest-teal-950);
+  color: var(--color-app-text);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow-x: hidden;
+  margin: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+@media (max-width: 639px) {
+  input[type="text"],
+  input[type="tel"],
+  input[type="password"],
+  input[type="email"],
+  input[type="number"],
+  input[type="search"],
+  input[type="file"],
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}
+
+button, a, [role="button"], input, select, textarea, label {
+  touch-action: manipulation;
+}
+
+@keyframes pulse-ring {
+  0% { transform: scale(0.33); opacity: 1; }
+  80%, 100% { opacity: 0; }
+}
+.animate-pulse-ring {
+  animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+}

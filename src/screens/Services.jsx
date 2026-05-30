@@ -3,6 +3,14 @@ import { Phone, Star, Wrench, UserPlus, ChevronDown, ChevronLeft, MessageCircle,
 import { db } from '../data/db';
 import { translations } from '../data/translations';
 
+const G = 'linear-gradient(160deg, #082318 0%, #0F3D27 55%, #1B5E3B 100%)';
+const Wave = () => (
+  <svg viewBox="0 0 390 36" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"
+    style={{ display: 'block', width: '100%', height: 36 }}>
+    <path d="M0,36 C80,8 200,28 300,10 C350,2 370,18 390,4 L390,36 Z" fill="#F2F9F5"/>
+  </svg>
+);
+
 export default function Services({ lang, onNavigateToPortal, session }) {
   const t = translations[lang];
   const [activeCategory, setActiveCategory] = useState('doctors');
@@ -94,22 +102,54 @@ export default function Services({ lang, onNavigateToPortal, session }) {
     }
   };
 
+  const approvedCount = db.getApprovedProviders().length;
+
   return (
     <div className="flex-1 overflow-hidden flex flex-col relative bg-[#F2F9F5]">
 
       {/* ── Scrollable List ── */}
-      <div className="flex-1 overflow-y-auto no-scrollbar pb-8 flex flex-col pt-4">
+      <div className="flex-1 overflow-y-auto no-scrollbar pb-8 flex flex-col">
 
-        {/* Page Header */}
-        <div className="px-4 pb-3">
-          <h1 className="text-xl font-black text-[#0F3D27]">
-            {lang === 'en' ? 'Neighbourhood Services' : 'स्थानीय सेवाएं'}
-          </h1>
-          <p className="text-xs text-gray-400 font-medium mt-0.5">{t.servicesSubtitle}</p>
+        {/* ── Green Hero ── */}
+        <div className="relative shrink-0" style={{ background: G }}>
+          <div className="absolute top-0 right-0 w-40 h-40 rounded-full pointer-events-none"
+            style={{ background: 'rgba(27,94,59,0.45)', transform: 'translate(35%,-35%)' }} />
+          <div className="absolute bottom-8 left-0 w-24 h-24 rounded-full pointer-events-none"
+            style={{ background: 'rgba(110,231,183,0.07)', transform: 'translate(-25%,0)' }} />
+
+          <div className="relative z-10 px-5 pt-5 pb-2">
+            <p className="text-green-300 text-xs font-semibold mb-1">
+              🔧 {lang === 'en' ? 'Local Services' : 'स्थानीय सेवाएं'}
+            </p>
+            <h2 className="text-[22px] font-black text-white leading-tight">
+              {lang === 'en' ? 'Neighbourhood Services' : 'पड़ोस की सेवाएं'}
+            </h2>
+            <p className="text-white/50 text-xs font-medium mt-1 mb-4">
+              {approvedCount} {lang === 'en' ? 'verified providers in your village' : 'सत्यापित सेवा प्रदाता'}
+            </p>
+
+            {/* Search inside hero */}
+            <div className="bg-white/12 backdrop-blur-sm border border-white/15 rounded-2xl px-4 py-3 flex items-center gap-3 mb-2">
+              <Search size={15} className="text-white/50 shrink-0" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+                placeholder={lang === 'en' ? 'Search by name or location...' : 'नाम या स्थान से खोजें...'}
+                className="flex-1 bg-transparent text-white placeholder-white/40 text-sm font-medium outline-none"
+              />
+              {searchQuery && (
+                <button onClick={() => setSearchQuery('')} className="text-white/50 active-press">
+                  <X size={14} strokeWidth={2} />
+                </button>
+              )}
+            </div>
+          </div>
+          <div className="relative z-10"><Wave /></div>
         </div>
 
         {/* Register banner */}
-        <div className="px-4 mb-4">
+        <div className="px-4 mt-3 mb-4">
           <div
             onClick={onNavigateToPortal}
             className="active-press cursor-pointer bg-[#0F3D27] rounded-2xl p-4 flex items-center justify-between gap-4"

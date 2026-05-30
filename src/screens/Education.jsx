@@ -1,25 +1,25 @@
 import React from 'react';
-import { GraduationCap, Phone, Clock, Bell, MapPin, User } from 'lucide-react';
+import { Phone, Clock, Bell, MapPin, User } from 'lucide-react';
 import { translations } from '../data/translations';
 import { db } from '../data/db';
 
+const G = 'linear-gradient(160deg, #082318 0%, #0F3D27 55%, #1B5E3B 100%)';
+const Wave = () => (
+  <svg viewBox="0 0 390 36" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"
+    style={{ display: 'block', width: '100%', height: 36 }}>
+    <path d="M0,36 C80,8 200,28 300,10 C350,2 370,18 390,4 L390,36 Z" fill="#F2F9F5"/>
+  </svg>
+);
+
+const TYPE_META = {
+  anganwadi: { color: '#db2777', light: '#fdf2f8', border: '#fbcfe8', emoji: '🏫', label: { en: 'Anganwadi', hi: 'आंगनवाड़ी' } },
+  primary:   { color: '#2563eb', light: '#eff6ff', border: '#bfdbfe', emoji: '📚', label: { en: 'Primary',   hi: 'प्राथमिक'  } },
+  high:      { color: '#7c3aed', light: '#f5f3ff', border: '#ddd6fe', emoji: '🎓', label: { en: 'High School',hi: 'हाई स्कूल' } },
+  library:   { color: '#d97706', light: '#fffbeb', border: '#fde68a', emoji: '📖', label: { en: 'Library',   hi: 'पुस्तकालय' } },
+};
+
 export default function Education({ lang }) {
   const t = translations[lang];
-
-  const typeLabels = {
-    anganwadi: lang === 'en' ? 'Anganwadi' : 'आंगनवाड़ी',
-    primary:   lang === 'en' ? 'Primary'   : 'प्राथमिक',
-    high:      lang === 'en' ? 'High School': 'हाई स्कूल',
-    library:   lang === 'en' ? 'Library'   : 'पुस्तकालय'
-  };
-
-  const typeBadgeColors = {
-    anganwadi: 'text-pink-600 bg-pink-50 border-pink-200',
-    primary:   'text-blue-600 bg-blue-50 border-blue-200',
-    high:      'text-purple-600 bg-purple-50 border-purple-200',
-    library:   'text-amber-600 bg-amber-50 border-amber-200',
-  };
-
   const schoolsList = db.getSchools();
 
   const handleCall = (name, phoneNum) => {
@@ -28,82 +28,108 @@ export default function Education({ lang }) {
   };
 
   return (
-    <div className="flex-1 overflow-y-auto no-scrollbar pb-8 bg-[#FAF7F2] flex flex-col pt-4">
+    <div className="flex-1 overflow-y-auto no-scrollbar flex flex-col bg-[#F2F9F5]">
 
-      {/* Header */}
-      <div className="px-4 pb-4 flex flex-col gap-2">
-        <div className="flex items-center gap-2">
-          <span className="w-1 h-4 rounded-full bg-coral shrink-0" />
-          <GraduationCap size={13} strokeWidth={2} className="text-coral" />
-          <span className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">{t.educationSectionTitle}</span>
+      {/* ── Green Hero ── */}
+      <div className="relative shrink-0" style={{ background: G }}>
+        <div className="absolute top-0 right-0 w-40 h-40 rounded-full pointer-events-none"
+          style={{ background: 'rgba(27,94,59,0.45)', transform: 'translate(35%,-35%)' }} />
+        <div className="absolute bottom-8 left-0 w-24 h-24 rounded-full pointer-events-none"
+          style={{ background: 'rgba(110,231,183,0.07)', transform: 'translate(-25%,0)' }} />
+
+        <div className="relative z-10 px-5 pt-5 pb-2">
+          <p className="text-green-300 text-xs font-semibold mb-1">
+            🎓 {lang === 'en' ? 'Schools & Education' : 'स्कूल और शिक्षा'}
+          </p>
+          <h2 className="text-[22px] font-black text-white leading-tight">
+            {lang === 'en' ? 'Local Institutions' : 'स्थानीय संस्थाएं'}
+          </h2>
+          <p className="text-white/50 text-xs font-medium mt-1 mb-4">
+            {schoolsList.length} {lang === 'en' ? 'institutions in your village' : 'संस्थाएं आपके गांव में'}
+          </p>
         </div>
-        <p className="text-xs text-gray-500 leading-relaxed font-medium">{t.educationSubtitle}</p>
+        <div className="relative z-10"><Wave /></div>
       </div>
 
-      {/* Schools List */}
-      <div className="px-4 space-y-4">
-        {schoolsList.length > 0 ? (
-          schoolsList.map((school) => (
-            <div key={school.id} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 flex flex-col gap-3 hover:shadow-md transition-all">
+      {/* ── School Cards ── */}
+      <div className="px-4 pt-3 pb-8 flex flex-col gap-4">
+        {schoolsList.length > 0 ? schoolsList.map((school) => {
+          const meta = TYPE_META[school.type] || { color: '#6b7280', light: '#f9fafb', border: '#e5e7eb', emoji: '🏫', label: { en: school.type, hi: school.type } };
+          return (
+            <div key={school.id} className="bg-white rounded-2xl shadow-sm overflow-hidden"
+              style={{ borderLeft: `4px solid ${meta.color}` }}>
+              <div className="p-4 flex flex-col gap-3">
 
-              {/* Institution Header */}
-              <div>
-                <span className={`text-[9px] font-bold tracking-wider uppercase px-2.5 py-1 rounded-lg border mb-2 inline-block ${typeBadgeColors[school.type] || 'text-gray-500 bg-gray-50 border-gray-200'}`}>
-                  🏫 {typeLabels[school.type] || school.type}
-                </span>
-                <h3 className="text-sm font-semibold text-gray-900 leading-snug">{school.name[lang]}</h3>
-                <div className="flex items-center gap-1.5 text-xs text-gray-400 mt-1.5 font-medium">
-                  <MapPin size={11} strokeWidth={1.5} />
-                  <span>{school.location[lang]}</span>
-                </div>
-              </div>
-
-              {/* Operating Hours */}
-              <div className="flex items-center gap-2.5 p-3 rounded-xl bg-emerald-50 border border-emerald-100">
-                <Clock size={15} strokeWidth={1.5} className="text-emerald-600 shrink-0" />
-                <div className="text-xs">
-                  <p className="text-[9px] text-emerald-600 font-bold uppercase tracking-wider mb-0.5">{t.operatingHours}</p>
-                  <p className="text-gray-800 font-semibold">{school.hours[lang]}</p>
-                </div>
-              </div>
-
-              {/* Headmaster */}
-              <div className="flex items-center justify-between p-3 rounded-xl bg-gray-50 border border-gray-100">
-                <div className="flex items-center gap-2.5 min-w-0">
-                  <div className="w-8 h-8 rounded-full bg-sky-100 flex items-center justify-center text-sky-600 shrink-0">
-                    <User size={15} strokeWidth={1.5} />
+                {/* Header: emoji icon + name + badge */}
+                <div className="flex items-start gap-3">
+                  <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl shrink-0"
+                    style={{ backgroundColor: meta.light, border: `1px solid ${meta.border}` }}>
+                    {meta.emoji}
                   </div>
-                  <div className="text-xs min-w-0">
-                    <p className="text-[9px] text-gray-400 font-bold uppercase tracking-wider mb-0.5">
-                      {school.type === 'library' ? (lang === 'en' ? 'Librarian' : 'पुस्तकालयाध्यक्ष') : t.headmaster}
-                    </p>
-                    <p className="text-gray-900 font-semibold truncate">{school.principal[lang]}</p>
+                  <div className="flex-1 min-w-0">
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full inline-block mb-1.5"
+                      style={{ color: meta.color, backgroundColor: meta.light, border: `1px solid ${meta.border}` }}>
+                      {meta.label[lang]}
+                    </span>
+                    <h3 className="text-[14px] font-bold text-[#0D2B1A] leading-snug">{school.name[lang]}</h3>
+                    <div className="flex items-center gap-1 mt-1">
+                      <MapPin size={10} strokeWidth={1.5} className="text-[#92B4A4] shrink-0" />
+                      <span className="text-[11px] text-[#52786A] font-medium">{school.location[lang]}</span>
+                    </div>
                   </div>
                 </div>
-                <button
-                  onClick={() => handleCall(school.principal[lang], school.phone)}
-                  className="active-press flex items-center gap-1 px-3 py-2 rounded-xl bg-coral hover:bg-coral-dark text-white font-semibold text-xs transition-colors shadow-sm"
-                >
-                  <Phone size={11} strokeWidth={2} />
-                  {t.call.toUpperCase()}
-                </button>
-              </div>
 
-              {/* Announcement */}
-              <div className="p-3 rounded-xl bg-amber-50 border border-amber-100 flex gap-3">
-                <div className="p-1.5 rounded-lg bg-amber-100 text-amber-600 shrink-0 self-start">
-                  <Bell size={13} strokeWidth={1.5} />
+                {/* Operating Hours */}
+                <div className="flex items-center gap-2.5 p-3 rounded-xl bg-emerald-50 border border-emerald-100">
+                  <Clock size={14} strokeWidth={1.5} className="text-emerald-600 shrink-0" />
+                  <div>
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-emerald-600 mb-0.5">{t.operatingHours}</p>
+                    <p className="text-xs text-gray-800 font-semibold">{school.hours[lang]}</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-[9px] font-bold text-amber-600 uppercase tracking-widest">{t.announcements}</p>
-                  <p className="text-gray-600 text-xs mt-1 leading-relaxed">{school.announcement[lang]}</p>
+
+                {/* Principal row */}
+                <div className="flex items-center justify-between p-3 rounded-xl bg-gray-50 border border-gray-100">
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <div className="w-8 h-8 rounded-full bg-sky-100 flex items-center justify-center shrink-0">
+                      <User size={14} strokeWidth={1.5} className="text-sky-600" />
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-0.5">
+                        {school.type === 'library' ? (lang === 'en' ? 'Librarian' : 'पुस्तकालयाध्यक्ष') : t.headmaster}
+                      </p>
+                      <p className="text-xs text-gray-900 font-semibold truncate">{school.principal[lang]}</p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => handleCall(school.principal[lang], school.phone)}
+                    className="active-press flex items-center gap-1.5 px-3 py-2 rounded-xl text-white font-bold text-xs shadow-sm"
+                    style={{ background: 'linear-gradient(135deg, #F97316, #EA6C0A)' }}
+                  >
+                    <Phone size={11} strokeWidth={2} />
+                    {t.call.toUpperCase()}
+                  </button>
+                </div>
+
+                {/* Announcement */}
+                <div className="p-3 rounded-xl bg-amber-50 border border-amber-100 flex gap-2.5">
+                  <div className="p-1.5 rounded-lg bg-amber-100 shrink-0 self-start">
+                    <Bell size={12} strokeWidth={1.5} className="text-amber-600" />
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-amber-700 mb-1">{t.announcements}</p>
+                    <p className="text-xs text-gray-600 leading-relaxed">{school.announcement[lang]}</p>
+                  </div>
                 </div>
               </div>
             </div>
-          ))
-        ) : (
-          <div className="text-center py-12 text-gray-400 text-sm">
-            📭 {lang === 'en' ? 'No schools listed yet.' : 'कोई स्कूल अभी सूचीबद्ध नहीं है।'}
+          );
+        }) : (
+          <div className="text-center py-16 flex flex-col items-center gap-3">
+            <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center text-3xl">📭</div>
+            <p className="text-sm font-semibold text-gray-500">
+              {lang === 'en' ? 'No schools listed yet.' : 'कोई स्कूल अभी सूचीबद्ध नहीं है।'}
+            </p>
           </div>
         )}
       </div>

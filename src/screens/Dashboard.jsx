@@ -1,7 +1,15 @@
 import React, { useState } from 'react';
 import { db } from '../data/db';
 import { translations } from '../data/translations';
-import { LogOut, Save, Trash2, Share2, MessageCircle, AlertTriangle, Eye, ShieldAlert, Sparkles, Mail, Camera, BadgeCheck, FileText } from 'lucide-react';
+import { LogOut, Save, Trash2, Share2, MessageCircle, AlertTriangle, Eye, ShieldAlert, Mail, Camera, BadgeCheck, FileText } from 'lucide-react';
+
+const G = 'linear-gradient(160deg, #082318 0%, #0F3D27 55%, #1B5E3B 100%)';
+const Wave = () => (
+  <svg viewBox="0 0 390 36" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"
+    style={{ display: 'block', width: '100%', height: 36 }}>
+    <path d="M0,36 C80,8 200,28 300,10 C350,2 370,18 390,4 L390,36 Z" fill="#F2F9F5"/>
+  </svg>
+);
 
 const inputCls = "form-input w-full text-sm px-3 py-2.5";
 const labelCls = "form-label block text-base text-gray-600 uppercase tracking-wider";
@@ -117,48 +125,60 @@ export default function Dashboard({ provider, onLogout, lang }) {
   };
 
   return (
-    <div className="flex-1 overflow-y-auto no-scrollbar pb-8 bg-[#FAF7F2] flex flex-col pt-4">
+    <div className="flex-1 overflow-y-auto no-scrollbar pb-8 bg-[#F2F9F5] flex flex-col">
 
-      {/* Header */}
-      <div className="px-5 pb-4 flex justify-between items-center select-none">
-        <div className="flex items-center gap-2">
-          <span className="w-1 h-4 rounded-full bg-coral shrink-0" />
-          <Sparkles size={13} strokeWidth={2} className="text-coral" />
-          <span className="text-sm font-bold uppercase tracking-wider text-gray-400">
-            {lang === 'en' ? 'Dashboard' : 'डैशबोर्ड'}
-          </span>
-        </div>
-        <button
-          onClick={onLogout}
-          className="active-press flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white hover:bg-red-50 hover:text-red-500 border border-gray-200 text-sm font-medium text-gray-500 transition-colors shadow-sm"
-        >
-          <LogOut size={13} strokeWidth={1.5} />
-          {lang === 'en' ? 'Logout' : 'लॉगआउट'}
-        </button>
-      </div>
+      {/* ── Green Profile Hero ── */}
+      <div className="relative shrink-0" style={{ background: G }}>
+        <div className="absolute top-0 right-0 w-40 h-40 rounded-full pointer-events-none"
+          style={{ background: 'rgba(27,94,59,0.45)', transform: 'translate(35%,-35%)' }} />
+        <div className="absolute bottom-8 left-0 w-24 h-24 rounded-full pointer-events-none"
+          style={{ background: 'rgba(110,231,183,0.07)', transform: 'translate(-25%,0)' }} />
 
-      <div className="px-5 space-y-5">
-
-        {/* Status Badge */}
-        <div className="p-4 rounded-2xl bg-white shadow-sm border border-gray-100 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 bg-gray-100 text-gray-400">
-            <Eye size={20} />
+        <div className="relative z-10 px-5 pt-5 pb-2">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-3">
+              {/* Profile avatar */}
+              <div className="w-14 h-14 rounded-2xl border-2 border-white/30 overflow-hidden bg-white/20 flex items-center justify-center shrink-0 shadow-md">
+                {provider.profilePhoto
+                  ? <img src={provider.profilePhoto} alt="" className="w-full h-full object-cover" />
+                  : <span className="text-2xl">{categoryIcons[category] || '👤'}</span>}
+              </div>
+              <div>
+                <p className="text-green-300 text-[10px] font-semibold uppercase tracking-wider">
+                  {lang === 'en' ? 'Provider Dashboard' : 'प्रदाता डैशबोर्ड'}
+                </p>
+                <h2 className="text-[18px] font-black text-white leading-tight">{nameEn || provider.name?.en}</h2>
+                <p className="text-white/60 text-xs font-medium mt-0.5 capitalize">{category}</p>
+              </div>
+            </div>
+            <button
+              onClick={onLogout}
+              className="active-press flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/15 border border-white/25 text-white text-xs font-semibold shrink-0"
+            >
+              <LogOut size={12} strokeWidth={1.5} />
+              {lang === 'en' ? 'Logout' : 'बाहर'}
+            </button>
           </div>
-          <div>
-            <p className="text-sm text-gray-400 font-bold uppercase tracking-wider mb-0.5">
-              {lang === 'en' ? 'Listing Visibility Status' : 'सूची दृश्यता स्थिति'}
-            </p>
+
+          {/* Status pill */}
+          <div className="mb-3">
             {provider.status === 'approved' ? (
-                <span className="inline-flex items-center gap-1 text-sm font-bold text-emerald-600 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-full">
-                ● {lang === 'en' ? 'APPROVED & LIVE' : 'मंजूर और लाइव'}
+              <span className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-700 bg-emerald-100 border border-emerald-200 px-3 py-1.5 rounded-full">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block" />
+                {lang === 'en' ? 'Approved & Live' : 'मंजूर और लाइव'}
               </span>
             ) : (
-                <span className="inline-flex items-center gap-1 text-sm font-bold text-amber-600 bg-amber-50 border border-amber-200 px-3 py-1 rounded-full">
-                ● {lang === 'en' ? 'PENDING APPROVAL' : 'स्वीकृति लंबित'}
+              <span className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-700 bg-amber-100 border border-amber-200 px-3 py-1.5 rounded-full">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-500 inline-block" />
+                {lang === 'en' ? 'Pending Approval' : 'स्वीकृति लंबित'}
               </span>
             )}
           </div>
         </div>
+        <div className="relative z-10"><Wave /></div>
+      </div>
+
+      <div className="px-5 pt-4 space-y-5">
 
         {saveSuccess && (
           <div className="p-3 bg-emerald-50 border border-emerald-200 text-emerald-600 font-bold text-sm rounded-xl text-center">

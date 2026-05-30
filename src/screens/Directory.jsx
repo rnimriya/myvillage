@@ -1,10 +1,18 @@
 import React, { useState, useMemo } from 'react';
-import { Phone, MessageCircle, ShieldCheck, Settings, Check, X, ChevronRight, Search } from 'lucide-react';
+import { Phone, MessageCircle, ShieldCheck, Settings, Check, X, ChevronRight, Search, Users } from 'lucide-react';
 import { translations } from '../data/translations';
 import { db } from '../data/db';
 
+const G = 'linear-gradient(160deg, #082318 0%, #0F3D27 55%, #1B5E3B 100%)';
+const Wave = () => (
+  <svg viewBox="0 0 390 36" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"
+    style={{ display: 'block', width: '100%', height: 36 }}>
+    <path d="M0,36 C80,8 200,28 300,10 C350,2 370,18 390,4 L390,36 Z" fill="#F2F9F5"/>
+  </svg>
+);
+
 const SectionLabel = ({ en, hi, lang }) => (
-  <p className="text-[10px] font-bold tracking-[0.18em] uppercase text-[#F97316] px-1 mb-2 select-none">
+  <p className="text-[11px] font-semibold tracking-[0.08em] uppercase text-[#1B5E3B] mb-2 select-none">
     {lang === 'en' ? en : hi}
   </p>
 );
@@ -112,7 +120,7 @@ export default function Directory({ lang }) {
   };
 
   const GroupedCard = ({ items, accentColor = 'coral' }) => (
-    <div className="bg-white rounded-2xl overflow-hidden" style={{ border: '1px solid #E8D5C0', boxShadow: '0 1px 4px rgba(45,31,14,0.06)' }}>
+    <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100">
       {items.map((leader, i) => {
         const isExpanded = expandedId === leader.id;
         return (
@@ -158,82 +166,90 @@ export default function Directory({ lang }) {
               )}
             </div>
 
-            {i < items.length - 1 && <div className="h-px bg-[#E8D5C0] mx-4" />}
+            {i < items.length - 1 && <div className="h-px bg-gray-100 mx-4" />}
           </React.Fragment>
         );
       })}
     </div>
   );
 
+  const totalMembers = leadersList.length;
+
   return (
-    <div className="flex-1 overflow-y-auto no-scrollbar pb-8 bg-[#F2F9F5] flex flex-col pt-4">
+    <div className="flex-1 overflow-y-auto no-scrollbar flex flex-col bg-[#F2F9F5]">
 
-      {/* Header row */}
-      <div className="px-4 pb-3 flex justify-between items-center select-none">
-        <div>
-          <p className="text-base font-black text-[#0F3D27]">
-            {isAdminMode ? (lang === 'en' ? 'Approvals' : 'स्वीकृतियां') : (lang === 'en' ? 'Village Directory' : 'ग्राम निर्देशिका')}
-          </p>
-          <p className="text-[11px] text-[#52786A] font-medium mt-0.5">
-            {isAdminMode
-              ? (lang === 'en' ? 'Approve or reject pending listings' : 'लंबित सूचियों को स्वीकृत या अस्वीकार करें')
-              : t.leadersSubtitle}
-          </p>
-        </div>
-        <button
-          onClick={() => { setIsAdminMode(!isAdminMode); setPendingQueue(db.getPendingProviders()); setExpandedId(null); setSearchQuery(''); }}
-          className={`active-press flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-[11px] font-bold tracking-wider transition-all uppercase ${
-            isAdminMode
-              ? 'bg-amber-500 border-amber-500 text-white shadow-sm'
-              : 'bg-white border-[#E8D5C0] text-[#52786A] shadow-sm'
-          }`}
-        >
-          <Settings size={12} strokeWidth={1.5} className={isAdminMode ? 'animate-spin' : ''} />
-          <span>{isAdminMode ? (lang === 'en' ? 'Exit' : 'बंद करें') : (lang === 'en' ? 'Admin' : 'एडमिन')}</span>
-        </button>
-      </div>
+      {/* ── Green Hero ── */}
+      <div className="relative shrink-0" style={{ background: G }}>
+        <div className="absolute top-0 right-0 w-40 h-40 rounded-full pointer-events-none"
+          style={{ background: 'rgba(27,94,59,0.45)', transform: 'translate(35%,-35%)' }} />
+        <div className="absolute bottom-8 left-0 w-24 h-24 rounded-full pointer-events-none"
+          style={{ background: 'rgba(110,231,183,0.07)', transform: 'translate(-25%,0)' }} />
 
-      {/* Search bar (public mode only) */}
-      {!isAdminMode && (
-        <div className="px-4 mb-3">
-          <div className="relative">
-            <span className="absolute inset-y-0 left-3.5 flex items-center pointer-events-none text-[#92B4A4]">
-              <Search size={14} strokeWidth={1.5} />
-            </span>
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder={lang === 'en' ? 'Search by name or role…' : 'नाम या पद से खोजें…'}
-              className="w-full bg-white border border-[#E8D5C0] rounded-2xl pl-9 pr-9 py-2.5 text-sm text-[#0F3D27] placeholder-[#92B4A4] outline-none focus:border-[#F97316] transition-colors shadow-sm"
-            />
-            {searchQuery && (
-              <button
-                onClick={() => setSearchQuery('')}
-                className="absolute inset-y-0 right-3 flex items-center text-[#92B4A4] hover:text-[#0F3D27]"
-              >
-                <X size={14} strokeWidth={2} />
-              </button>
-            )}
+        <div className="relative z-10 px-5 pt-5 pb-2">
+          <div className="flex items-start justify-between mb-1">
+            <div>
+              <p className="text-green-300 text-xs font-semibold mb-1">
+                👥 {lang === 'en' ? 'Village Directory' : 'ग्राम निर्देशिका'}
+              </p>
+              <h2 className="text-[22px] font-black text-white leading-tight">
+                {isAdminMode ? (lang === 'en' ? 'Provider Approvals' : 'स्वीकृतियां') : (lang === 'en' ? 'Your Representatives' : 'आपके प्रतिनिधि')}
+              </h2>
+              <p className="text-white/50 text-xs font-medium mt-1">
+                {isAdminMode
+                  ? (lang === 'en' ? 'Approve or reject pending listings' : 'लंबित सूचियों पर कार्रवाई करें')
+                  : `${totalMembers} ${lang === 'en' ? 'members in your village' : 'सदस्य आपके गांव में'}`}
+              </p>
+            </div>
+            <button
+              onClick={() => { setIsAdminMode(!isAdminMode); setPendingQueue(db.getPendingProviders()); setExpandedId(null); setSearchQuery(''); }}
+              className={`active-press shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-[11px] font-bold transition-all mt-1 ${
+                isAdminMode
+                  ? 'bg-amber-400 border-amber-300 text-white'
+                  : 'bg-white/15 border-white/25 text-white'
+              }`}
+            >
+              <Settings size={12} strokeWidth={1.5} className={isAdminMode ? 'animate-spin' : ''} />
+              <span>{isAdminMode ? (lang === 'en' ? 'Exit' : 'बंद') : (lang === 'en' ? 'Admin' : 'एडमिन')}</span>
+            </button>
           </div>
+
+          {/* Search inside hero (public mode only) */}
+          {!isAdminMode && (
+            <div className="bg-white/12 backdrop-blur-sm border border-white/15 rounded-2xl px-4 py-3 flex items-center gap-3 mt-4 mb-2">
+              <Search size={15} className="text-white/50 shrink-0" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+                placeholder={lang === 'en' ? 'Search by name or role…' : 'नाम या पद से खोजें…'}
+                className="flex-1 bg-transparent text-white placeholder-white/40 text-sm font-medium outline-none"
+              />
+              {searchQuery && (
+                <button onClick={() => setSearchQuery('')} className="text-white/50 active-press">
+                  <X size={14} strokeWidth={2} />
+                </button>
+              )}
+            </div>
+          )}
         </div>
-      )}
+        <div className="relative z-10"><Wave /></div>
+      </div>
 
       {/* Filter chips (public mode only) */}
       {!isAdminMode && (
-        <div className="px-4 mb-4">
-          <div className="flex gap-2 overflow-x-auto no-scrollbar">
+        <div className="px-4 overflow-x-auto no-scrollbar -mt-1">
+          <div className="flex gap-2 py-3">
             {filterChips.map((chip) => (
               <button
                 key={chip.id}
                 onClick={() => setActiveFilter(chip.id)}
-                className={`shrink-0 px-4 py-1.5 rounded-full text-xs font-bold border transition-all active-press ${
+                className={`active-press shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-bold border transition-all ${
                   activeFilter === chip.id
-                    ? 'bg-[#F97316] border-[#F97316] text-white shadow-sm'
-                    : 'bg-white border-[#E8D5C0] text-[#52786A]'
+                    ? 'bg-[#0F3D27] text-white border-[#0F3D27] shadow-md'
+                    : 'bg-white text-gray-600 border-gray-200'
                 }`}
               >
-                {chip.label}
+                {chip.id === 'all' ? '🌟' : chip.id === 'panchayat' ? '🏛️' : '📋'} {chip.label}
               </button>
             ))}
           </div>
@@ -242,7 +258,7 @@ export default function Directory({ lang }) {
 
       {/* Admin Approval Queue */}
       {isAdminMode ? (
-        <div className="px-4 space-y-3 flex-1">
+        <div className="px-4 space-y-3 flex-1 pb-8">
           {pendingQueue.length > 0 ? (
             <>
               <SectionLabel en="PENDING APPROVALS" hi="लंबित स्वीकृतियां" lang={lang} />
@@ -301,7 +317,7 @@ export default function Directory({ lang }) {
         </div>
       ) : (
         /* Public Directory */
-        <div className="px-4 space-y-5">
+        <div className="px-4 space-y-5 pb-8">
 
           {showPanchayat && filteredPanchayat.length > 0 && (
             <div className="space-y-2">

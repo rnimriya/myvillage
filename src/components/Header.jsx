@@ -1,5 +1,5 @@
 import React from 'react';
-import { Languages, User, Key, TreePine } from 'lucide-react';
+import { Languages, User, Key } from 'lucide-react';
 import { translations } from '../data/translations';
 
 export default function Header({ lang, onLangChange, session, onPortalClick }) {
@@ -15,15 +15,12 @@ export default function Header({ lang, onLangChange, session, onPortalClick }) {
         style={{ paddingTop: 'max(12px, env(safe-area-inset-top, 12px))', paddingBottom: '14px' }}
       >
         {/* Brand */}
-        <div className="flex items-center gap-2.5 min-w-0">
-          <div className="w-9 h-9 rounded-full bg-white/20 border border-white/30 flex items-center justify-center shrink-0">
-            <TreePine size={17} strokeWidth={2} className="text-white" />
-          </div>
+        <div className="flex items-center min-w-0">
           <div className="min-w-0">
-            <h1 className="text-[15px] font-bold text-white leading-tight truncate">
+            <h1 className="text-[22px] font-black text-white leading-tight truncate tracking-tight">
               {t.appTitle}
             </h1>
-            <p className="text-[10px] text-white/65 font-semibold uppercase tracking-[0.10em] mt-0.5 truncate">
+            <p className="text-[10px] text-white/65 font-semibold uppercase tracking-[0.10em] truncate">
               {t.appSubtitle}
             </p>
           </div>

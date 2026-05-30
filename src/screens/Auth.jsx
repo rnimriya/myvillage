@@ -72,7 +72,7 @@ export default function Auth({ lang, onLoginSuccess, onAdminLoginSuccess }) {
   const [wardNo, setWardNo]         = useState('');
   const [addressEn, setAddressEn]   = useState('');
   const [addressHi, setAddressHi]   = useState('');
-  const [resetPhone, setResetPhone] = useState('');
+  const [resetEmail, setResetEmail] = useState('');
   const [otp, setOtp]               = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [adminUser, setAdminUser]   = useState('');
@@ -122,8 +122,8 @@ export default function Auth({ lang, onLoginSuccess, onAdminLoginSuccess }) {
 
   const handleForgot = (e) => {
     e.preventDefault(); setError('');
-    if (!db.getProviders().find(p => p.phone === resetPhone)) {
-      setError(lang === 'en' ? 'Phone number not found.' : 'यह फोन नंबर उपलब्ध नहीं है।'); return;
+    if (!db.getProviders().find(p => p.email && p.email.toLowerCase() === resetEmail.trim().toLowerCase())) {
+      setError(lang === 'en' ? 'Email address not found.' : 'यह ईमेल उपलब्ध नहीं है।'); return;
     }
     setInfo(lang === 'en' ? 'OTP sent! Use code: 123456' : 'ओटीपी भेजा गया! कोड: 123456');
     setView('reset');
@@ -133,11 +133,11 @@ export default function Auth({ lang, onLoginSuccess, onAdminLoginSuccess }) {
     e.preventDefault(); setError('');
     if (otp !== '123456') { setError(lang === 'en' ? 'Invalid OTP code.' : 'अमान्य ओटीपी।'); return; }
     if (!newPassword || newPassword.length < 4) { setError(lang === 'en' ? 'Min 4 characters.' : 'कम से कम 4 अक्षर।'); return; }
-    const p = db.getProviders().find(p => p.phone === resetPhone);
+    const p = db.getProviders().find(p => p.email && p.email.toLowerCase() === resetEmail.trim().toLowerCase());
     if (p) {
       db.updateProvider(p.id, { password: newPassword });
       setInfo(lang === 'en' ? 'Password updated! Please login.' : 'पासवर्ड बदला गया!');
-      setPhone(resetPhone); setPassword(newPassword); setView('login');
+      setPassword(newPassword); setView('login');
     }
   };
 
@@ -175,7 +175,7 @@ export default function Auth({ lang, onLoginSuccess, onAdminLoginSuccess }) {
           )}
           {view !== 'login' && (
             <p className="text-white font-bold text-lg mt-1">
-              {view === 'register'   ? (lang === 'en' ? 'Join Village Portal' : 'पोर्टल से जुड़ें')   : ''}
+              {view === 'register'   ? (lang === 'en' ? 'Lohari Jatu Portal' : 'लोहारी जाटू पोर्टल')   : ''}
               {view === 'forgot'     ? (lang === 'en' ? 'Forgot Password'     : 'पासवर्ड भूल गए')    : ''}
               {view === 'reset'      ? (lang === 'en' ? 'Reset Password'      : 'पासवर्ड रीसेट')      : ''}
               {view === 'superadmin' ? (lang === 'en' ? 'Admin Console'       : 'एडमिन कंसोल')       : ''}
@@ -276,10 +276,10 @@ export default function Auth({ lang, onLoginSuccess, onAdminLoginSuccess }) {
 
         {view === 'forgot' && (<>
           <h2 className="text-2xl font-black text-[#0D2B1A] mb-1">{lang==='en'?'Forgot Password':'पासवर्ड भूल गए'}</h2>
-          <p className="text-sm text-gray-500 mb-6">{lang==='en'?'Enter your registered mobile number':'अपना पंजीकृत मोबाइल नंबर दर्ज करें'}</p>
+          <p className="text-sm text-gray-500 mb-6">{lang==='en'?'Enter your registered email address':'अपना पंजीकृत ईमेल पता दर्ज करें'}</p>
           <Banners/>
           <form onSubmit={handleForgot} className="space-y-4">
-            <Field icon={Phone}><input type="tel" required value={resetPhone} onChange={e=>setResetPhone(e.target.value)} placeholder="+9198765..." className={inputCls}/></Field>
+            <Field icon={Mail}><input type="email" required value={resetEmail} onChange={e=>setResetEmail(e.target.value)} placeholder="email@example.com" className={inputCls}/></Field>
             <OBtn><span className="flex items-center justify-center gap-2"><KeyRound size={16}/>{lang==='en'?'Send OTP':'OTP भेजें'}</span></OBtn>
           </form>
         </>)}

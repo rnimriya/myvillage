@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { db } from '../data/db';
 import { translations } from '../data/translations';
 import {
-  ShieldCheck, LogOut, Trash2, Plus,
+  ShieldCheck, LogOut, Trash2, Plus, Pencil,
   Megaphone, MessageSquare, Award, Users, Wrench, GraduationCap, X, Check, Briefcase,
-  BadgeCheck, FileText
+  BadgeCheck, FileText, Calendar, User
 } from 'lucide-react';
 
 export default function SuperAdmin({ lang, onLogout }) {
@@ -33,6 +33,36 @@ export default function SuperAdmin({ lang, onLogout }) {
 
   const [showAddModal, setShowAddModal] = useState(false);
   const [formFields, setFormFields] = useState({});
+
+  const [showEditNewsModal, setShowEditNewsModal] = useState(false);
+  const [editingNews, setEditingNews] = useState(null);
+  const [editNewsFields, setEditNewsFields] = useState({});
+
+  const openEditNews = (item) => {
+    setEditingNews(item);
+    setEditNewsFields({
+      titleEn: item.title.en, titleHi: item.title.hi,
+      catEn: item.category.en, catHi: item.category.hi,
+      authorEn: item.author.en, authorHi: item.author.hi,
+      descEn: item.desc.en, descHi: item.desc.hi,
+      image: item.image
+    });
+    setShowEditNewsModal(true);
+  };
+
+  const handleEditNewsSubmit = (e) => {
+    e.preventDefault();
+    db.updateNews(editingNews.id, {
+      title: { en: editNewsFields.titleEn, hi: editNewsFields.titleHi },
+      category: { en: editNewsFields.catEn, hi: editNewsFields.catHi },
+      author: { en: editNewsFields.authorEn, hi: editNewsFields.authorHi },
+      desc: { en: editNewsFields.descEn, hi: editNewsFields.descHi },
+      image: editNewsFields.image || editingNews.image
+    });
+    refreshAllData();
+    setShowEditNewsModal(false);
+    setEditingNews(null);
+  };
 
   const refreshAllData = () => {
     setAnnouncements(db.getAnnouncements());
@@ -178,7 +208,7 @@ export default function SuperAdmin({ lang, onLogout }) {
       <div className="px-4 py-3 flex gap-2 overflow-x-auto no-scrollbar shrink-0 select-none bg-white border-b border-[#E8E0D4] shadow-sm">
         {[
           { id: 'announcements', label: lang === 'en' ? 'Alerts' : 'घोषणाएं', icon: Megaphone },
-          { id: 'news', label: lang === 'en' ? 'News' : 'समाचार', icon: MessageSquare },
+          { id: 'news', label: lang === 'en' ? 'Village Update' : 'ग्राम अपडेट', icon: MessageSquare },
           { id: 'schemes', label: lang === 'en' ? 'Schemes' : 'योजनाएं', icon: Award },
           { id: 'leaders', label: lang === 'en' ? 'Leaders' : 'प्रतिनिधि', icon: Users },
           { id: 'providers', label: lang === 'en' ? 'Providers' : 'सेवाएं', icon: Wrench },
@@ -243,25 +273,58 @@ export default function SuperAdmin({ lang, onLogout }) {
           </div>
         ))}
 
-        {/* B. NEWS FEED */}
+        {/* B. VILLAGE UPDATE */}
         {activeTab === 'news' && news.map((item) => (
-          <div key={item.id} className="bg-white border border-[#E8E0D4] rounded-2xl p-4 flex justify-between items-center gap-4 shadow-sm">
-            <div className="flex items-center gap-3 min-w-0">
-              <img src={item.image} alt="" className="w-10 h-10 rounded-xl object-cover bg-[#F5ECD8] shrink-0" />
-              <div className="min-w-0">
-                <span className="text-[9px] font-bold text-sky-600 uppercase bg-sky-50 px-2 py-0.5 rounded-lg border border-sky-100">
+          <div key={item.id} className="bg-white border border-[#E8E0D4] rounded-2xl overflow-hidden shadow-sm">
+            {/* Cover image */}
+            {item.image && (
+              <div className="w-full h-32 overflow-hidden bg-[#F5ECD8]">
+                <img src={item.image} alt="" className="w-full h-full object-cover" />
+              </div>
+            )}
+            <div className="p-4">
+              {/* Category + date row */}
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-[9px] font-bold text-sky-600 uppercase tracking-wider bg-sky-50 border border-sky-100 px-2.5 py-0.5 rounded-full">
                   {item.category[lang]}
                 </span>
-                <h4 className="text-sm font-bold text-[#2D1F0E] mt-1 truncate">{item.title[lang]}</h4>
-                <p className="text-xs text-[#8A7560] truncate">✏️ {item.author[lang]}</p>
+                <span className="text-[9px] text-[#8A7560] flex items-center gap-1">
+                  <Calendar size={9} /> {item.date[lang]}
+                </span>
+              </div>
+              {/* Title */}
+              <h4 className="text-sm font-black text-[#0D2B1A] leading-snug mb-1.5 line-clamp-2">
+                {item.title[lang]}
+              </h4>
+              {/* Description */}
+              <p className="text-[11px] text-[#8A7560] leading-relaxed line-clamp-2 mb-3">
+                {item.desc[lang]}
+              </p>
+              {/* Author */}
+              <div className="flex items-center gap-1.5 mb-3">
+                <div className="w-5 h-5 rounded-full bg-[#F5ECD8] border border-[#E8D5C0] flex items-center justify-center shrink-0">
+                  <User size={10} className="text-[#8A7560]" />
+                </div>
+                <span className="text-[10px] text-[#8A7560] font-semibold truncate">{item.author[lang]}</span>
+              </div>
+              {/* Actions */}
+              <div className="flex gap-2 pt-3 border-t border-[#F0E8DC]">
+                <button
+                  onClick={() => openEditNews(item)}
+                  className="active-press flex-1 flex items-center justify-center gap-1.5 py-2 rounded-full bg-[#F2F9F5] border border-[#D4EBD9] text-[#0F3D27] text-xs font-bold transition-colors hover:bg-[#D4EBD9]"
+                >
+                  <Pencil size={12} strokeWidth={2} />
+                  {lang === 'en' ? 'Edit' : 'संपादित करें'}
+                </button>
+                <button
+                  onClick={() => handleDelete(item.id, 'news')}
+                  className="active-press flex-1 flex items-center justify-center gap-1.5 py-2 rounded-full bg-red-50 border border-red-100 text-red-500 text-xs font-bold transition-colors hover:bg-red-100"
+                >
+                  <Trash2 size={12} strokeWidth={1.5} />
+                  {lang === 'en' ? 'Delete' : 'हटाएं'}
+                </button>
               </div>
             </div>
-            <button
-              onClick={() => handleDelete(item.id, 'news')}
-              className="w-8 h-8 rounded-full bg-red-50 hover:bg-red-100 text-red-500 flex items-center justify-center shrink-0 border border-red-100 transition-colors"
-            >
-              <Trash2 size={14} strokeWidth={1.5} />
-            </button>
           </div>
         ))}
 
@@ -676,6 +739,93 @@ export default function SuperAdmin({ lang, onLogout }) {
                 <Plus size={14} strokeWidth={2} />
                 {lang === 'en' ? 'ADD TO DIRECTORY' : 'सूची में जोड़ें'}
               </button>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* EDIT NEWS MODAL */}
+      {showEditNewsModal && editingNews && (
+        <div className="absolute inset-0 bg-[#0D2B1A]/75 backdrop-blur-sm z-50 flex items-center justify-center p-5 overflow-y-auto">
+          <div className="bg-white border border-[#E8E0D4] rounded-3xl w-full max-w-sm flex flex-col max-h-[92%] overflow-hidden shadow-2xl">
+            {/* Modal header */}
+            <div className="px-5 py-4 border-b border-slate-100 flex justify-between items-center shrink-0 bg-[#F2F9F5] rounded-t-3xl">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-full bg-[#1B5E3B]/10 border border-[#1B5E3B]/20 flex items-center justify-center">
+                  <Pencil size={14} strokeWidth={2} className="text-[#1B5E3B]" />
+                </div>
+                <h3 className="text-sm font-black text-[#0D2B1A] uppercase tracking-wide">
+                  {lang === 'en' ? 'Edit Village Update' : 'ग्राम अपडेट संपादित करें'}
+                </h3>
+              </div>
+              <button onClick={() => setShowEditNewsModal(false)} className="text-slate-400 hover:text-slate-600 transition-colors">
+                <X size={18} />
+              </button>
+            </div>
+
+            {/* Preview strip */}
+            {editNewsFields.image && (
+              <div className="w-full h-24 overflow-hidden bg-[#F5ECD8] shrink-0">
+                <img src={editNewsFields.image} alt="" className="w-full h-full object-cover" />
+              </div>
+            )}
+
+            {/* Edit form */}
+            <form onSubmit={handleEditNewsSubmit} className="p-5 overflow-y-auto no-scrollbar flex-1 space-y-4">
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <label className={labelCls}>Title (EN)</label>
+                  <input type="text" required value={editNewsFields.titleEn} onChange={e => setEditNewsFields({...editNewsFields, titleEn: e.target.value})} className={inputCls} />
+                </div>
+                <div className="space-y-1">
+                  <label className={labelCls}>शीर्षक (HI)</label>
+                  <input type="text" required value={editNewsFields.titleHi} onChange={e => setEditNewsFields({...editNewsFields, titleHi: e.target.value})} className={inputCls} />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <label className={labelCls}>Category (EN)</label>
+                  <input type="text" required value={editNewsFields.catEn} onChange={e => setEditNewsFields({...editNewsFields, catEn: e.target.value})} className={inputCls} />
+                </div>
+                <div className="space-y-1">
+                  <label className={labelCls}>श्रेणी (HI)</label>
+                  <input type="text" required value={editNewsFields.catHi} onChange={e => setEditNewsFields({...editNewsFields, catHi: e.target.value})} className={inputCls} />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <label className={labelCls}>Author (EN)</label>
+                  <input type="text" required value={editNewsFields.authorEn} onChange={e => setEditNewsFields({...editNewsFields, authorEn: e.target.value})} className={inputCls} />
+                </div>
+                <div className="space-y-1">
+                  <label className={labelCls}>लेखक (HI)</label>
+                  <input type="text" required value={editNewsFields.authorHi} onChange={e => setEditNewsFields({...editNewsFields, authorHi: e.target.value})} className={inputCls} />
+                </div>
+              </div>
+              <div className="space-y-1">
+                <label className={labelCls}>Photo URL</label>
+                <input type="text" value={editNewsFields.image} onChange={e => setEditNewsFields({...editNewsFields, image: e.target.value})} className={inputCls} placeholder="https://..." />
+              </div>
+              <div className="space-y-1">
+                <label className={labelCls}>Description (EN)</label>
+                <textarea required rows="3" value={editNewsFields.descEn} onChange={e => setEditNewsFields({...editNewsFields, descEn: e.target.value})} className={inputCls} />
+              </div>
+              <div className="space-y-1">
+                <label className={labelCls}>विवरण (HI)</label>
+                <textarea required rows="3" value={editNewsFields.descHi} onChange={e => setEditNewsFields({...editNewsFields, descHi: e.target.value})} className={inputCls} />
+              </div>
+
+              <div className="flex gap-3 pt-2">
+                <button type="button" onClick={() => setShowEditNewsModal(false)}
+                  className="flex-1 py-3 rounded-full bg-[#F5ECD8] border border-[#E8D5C0] text-[#8A7560] font-bold text-sm">
+                  {lang === 'en' ? 'Cancel' : 'रद्द करें'}
+                </button>
+                <button type="submit"
+                  className="flex-1 py-3 rounded-full text-white font-bold text-sm"
+                  style={{ background: 'linear-gradient(135deg, #1B5E3B, #0F3D27)' }}>
+                  {lang === 'en' ? 'Save Changes' : 'सहेजें'}
+                </button>
+              </div>
             </form>
           </div>
         </div>

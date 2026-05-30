@@ -449,6 +449,15 @@ export const db = {
     this.saveNews(updated);
   },
 
+  updateNews(id, updatedFields) {
+    const list = this.getNews();
+    const index = list.findIndex((item) => item.id === id);
+    if (index !== -1) {
+      list[index] = { ...list[index], ...updatedFields };
+      this.saveNews(list);
+    }
+  },
+
 
   // --- SCHEMES ---
   getSchemes() {

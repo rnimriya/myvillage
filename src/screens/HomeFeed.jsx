@@ -31,7 +31,7 @@ const ANN_META = {
 };
 
 const SL = ({ label }) => (
-  <p className="text-[11px] font-semibold tracking-[0.08em] uppercase text-[#1B5E3B] mb-3 select-none">{label}</p>
+  <p className="text-[11px] font-semibold tracking-[0.06em] uppercase text-[#1B5E3B] mb-3 select-none">{label}</p>
 );
 
 export default function HomeFeed({ lang, onNavigate }) {
@@ -57,20 +57,20 @@ export default function HomeFeed({ lang, onNavigate }) {
     <div className="flex-1 overflow-y-auto no-scrollbar flex flex-col bg-[#F2F9F5]">
 
       {/* ── Green Hero ── */}
-      <div className="relative shrink-0" style={{ background: G }}>
+      <div className="relative shrink-0 overflow-hidden" style={{ background: G }}>
         <div className="absolute top-0 right-0 w-44 h-44 rounded-full pointer-events-none"
-          style={{ background:'rgba(27,94,59,0.4)', transform:'translate(35%,-35%)' }} />
-        <div className="absolute bottom-8 left-0 w-28 h-28 rounded-full pointer-events-none"
-          style={{ background:'rgba(110,231,183,0.07)', transform:'translate(-25%,0)' }} />
+          style={{ background:'rgba(27,94,59,0.4)', transform:'translate(30%,-30%)' }} />
+        <div className="absolute bottom-8 left-0 w-24 h-24 rounded-full pointer-events-none"
+          style={{ background:'rgba(110,231,183,0.08)', transform:'translate(-20%,0)' }} />
 
-        <div className="relative z-10 px-5 pt-5 pb-2">
+        <div className="relative z-10" style={{ padding: '20px 20px 8px' }}>
           {/* Top row */}
           <div className="flex items-start justify-between mb-4">
-            <div>
+            <div className="min-w-0 flex-1 pr-3">
               <p className="text-green-300 text-xs font-semibold">
                 🌱 {lang==='en'?'Good Morning':'शुभ प्रभात'}
               </p>
-              <h2 className="text-[22px] font-black text-white mt-0.5 leading-tight">
+              <h2 className="text-[21px] font-black text-white mt-0.5 leading-tight">
                 {lang==='en'?'Lohari Jatu':'लोहारी जाटू'}
               </h2>
               <div className="flex items-center gap-1 mt-0.5">
@@ -93,7 +93,7 @@ export default function HomeFeed({ lang, onNavigate }) {
           </div>
 
           {/* Search bar */}
-          <div className="bg-white/12 backdrop-blur-sm border border-white/15 rounded-2xl px-4 py-3 flex items-center gap-3 mb-2">
+          <div className="bg-white/12 backdrop-blur-sm border border-white/15 rounded-full px-4 py-3 flex items-center gap-3 mb-2">
             <Search size={15} className="text-white/50 shrink-0" />
             <span className="text-white/40 text-sm font-medium">
               {lang==='en'?'Search announcements, news...':'घोषणाएं, समाचार खोजें...'}
@@ -105,78 +105,85 @@ export default function HomeFeed({ lang, onNavigate }) {
       </div>
 
       {/* ── Content ── */}
-      <div className="flex-1 px-4 -mt-1">
+      <div className="flex-1">
 
         {/* Quick Menu */}
-        <div className="grid grid-cols-4 gap-3 mb-5 pt-1">
-          {menuItems.map((item, i) => {
-            const { Icon } = item;
-            return (
-              <button key={i} onClick={() => item.id && onNavigate?.(item.id)}
-                className="active-press flex flex-col items-center gap-1.5">
-                <div className="w-full aspect-square rounded-2xl flex items-center justify-center shadow-sm border border-white/80"
-                  style={{ backgroundColor: item.bg, maxWidth: 60, maxHeight: 60 }}>
-                  <Icon size={22} strokeWidth={1.5} style={{ color: item.color }} />
-                </div>
-                <span className="text-[10px] font-semibold text-[#0D2B1A] text-center leading-tight">{item.label}</span>
-              </button>
-            );
-          })}
+        <div style={{ padding: '4px 16px 0' }}>
+          <div className="grid grid-cols-4 gap-2 mb-5">
+            {menuItems.map((item, i) => {
+              const { Icon } = item;
+              return (
+                <button key={i} onClick={() => item.id && onNavigate?.(item.id)}
+                  className="active-press flex flex-col items-center gap-1">
+                  <div className="w-full rounded-2xl flex items-center justify-center shadow-sm border border-white/80"
+                    style={{ backgroundColor: item.bg, aspectRatio: '1', maxWidth: 64, maxHeight: 64 }}>
+                    <Icon size={20} strokeWidth={1.5} style={{ color: item.color }} />
+                  </div>
+                  <span className="text-[9px] font-semibold text-[#0D2B1A] text-center leading-tight w-full truncate px-0.5">
+                    {item.label}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
         </div>
 
-        <div className="border-t border-gray-200 mb-4" />
+        <div style={{ margin: '0 16px' }} className="border-t border-gray-200 mb-4" />
 
-        {/* Announcements — Horizontal Carousel */}
+        {/* Announcements — Vertical List */}
         {announcements.length > 0 && (
-          <section className="mb-4">
+          <section className="mb-4" style={{ padding: '0 16px' }}>
             <div className="flex items-center justify-between mb-3">
               <SL label={lang==='en'?'URGENT ANNOUNCEMENTS':'आपातकालीन घोषणाएं'} />
               <span className="text-[10px] font-bold text-[#F97316] bg-orange-50 border border-orange-200 px-2 py-0.5 rounded-full">
                 🔴 {announcements.length} {lang==='en'?'Active':'सक्रिय'}
               </span>
             </div>
-            <div className="overflow-x-auto no-scrollbar -mx-4">
-              <div className="flex gap-3 px-4" style={{ width: 'max-content' }}>
-                {announcements.map((a) => {
-                  const key = a.badge.en.toLowerCase();
-                  const meta = ANN_META[key] || { g: 'linear-gradient(135deg,#F97316,#ea580c)', emoji: '📢' };
-                  return (
-                    <div key={a.id} className="w-[270px] rounded-2xl overflow-hidden shadow-sm shrink-0 border border-white/60">
-                      {/* Gradient top */}
-                      <div className="p-4" style={{ background: meta.g }}>
-                        <div className="flex items-center justify-between mb-3">
-                          <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full text-white"
-                            style={{ background: 'rgba(255,255,255,0.2)' }}>
-                            {a.badge[lang]}
+            <div className="space-y-3">
+              {announcements.map((a) => {
+                const key = a.badge.en.toLowerCase();
+                const meta = ANN_META[key] || { g: 'linear-gradient(135deg,#F97316,#ea580c)', emoji: '📢' };
+                return (
+                  <div key={a.id} className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100">
+                    {/* Left accent bar + content row */}
+                    <div className="flex">
+                      {/* Colored left stripe */}
+                      <div className="w-1.5 shrink-0 rounded-l-2xl" style={{ background: meta.g }} />
+                      {/* Main content */}
+                      <div className="flex-1 p-4">
+                        {/* Top row: badge + date */}
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full text-white"
+                            style={{ background: meta.g }}>
+                            {meta.emoji} {a.badge[lang]}
                           </span>
-                          <span className="text-[10px] text-white/70 flex items-center gap-1">
+                          <span className="text-[10px] text-gray-400 flex items-center gap-1">
                             <Calendar size={9} /> {a.date[lang]}
                           </span>
                         </div>
-                        <div className="text-3xl mb-2">{meta.emoji}</div>
-                        <h3 className="text-sm font-bold text-white leading-snug">{a.title[lang]}</h3>
-                      </div>
-                      {/* White bottom */}
-                      <div className="bg-white px-4 pt-3 pb-4">
+                        {/* Title */}
+                        <h3 className="text-sm font-bold text-[#0D2B1A] leading-snug mb-1.5">{a.title[lang]}</h3>
+                        {/* Description */}
                         <p className="text-xs text-gray-500 leading-relaxed line-clamp-2 mb-3">{a.desc[lang]}</p>
-                        <button className="active-press w-full flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-bold text-white"
+                        {/* Mark as read */}
+                        <button className="active-press flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-white"
                           style={{ background: meta.g }}>
-                          <CheckCircle2 size={12} strokeWidth={2.5} />
-                          {lang==='en'?"Mark as Read":'पढ़ लिया'}
+                          <CheckCircle2 size={11} strokeWidth={2.5} />
+                          {lang==='en'?'Mark as Read':'पढ़ लिया'}
                         </button>
                       </div>
                     </div>
-                  );
-                })}
-              </div>
+                  </div>
+                );
+              })}
             </div>
           </section>
         )}
 
-        <div className="border-t border-gray-200 mb-4" />
+        <div style={{ margin: '0 16px' }} className="border-t border-gray-200 mb-4" />
 
         {/* Village News */}
-        <section className="mb-4">
+        <section className="mb-4" style={{ padding: '0 16px' }}>
           <SL label={lang==='en'?'VILLAGE UPDATES':'गांव की खबरें'} />
           <div className="space-y-4">
             {newsList.map((news) => {
@@ -224,8 +231,8 @@ export default function HomeFeed({ lang, onNavigate }) {
         {/* Jobs — Board Style */}
         {jobsList.length > 0 && (
           <>
-            <div className="border-t border-gray-200 mb-4" />
-            <section className="pb-8">
+            <div style={{ margin: '0 16px' }} className="border-t border-gray-200 mb-4" />
+            <section className="pb-8" style={{ padding: '0 16px 32px' }}>
               <div className="flex items-center justify-between mb-3">
                 <SL label={lang==='en'?'GOVERNMENT JOBS':'सरकारी नौकरियां'} />
                 <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
@@ -264,7 +271,7 @@ export default function HomeFeed({ lang, onNavigate }) {
 
                       {/* Apply button */}
                       <a href={job.link} target="_blank" rel="noopener noreferrer"
-                        className="active-press flex items-center justify-center gap-2 py-3 rounded-2xl text-white font-bold text-xs"
+                        className="active-press flex items-center justify-center gap-2 py-3 rounded-full text-white font-bold text-xs"
                         style={{ background:'linear-gradient(135deg,#F97316,#EA6C0A)', boxShadow:'0 4px 12px rgba(249,115,22,0.25)' }}
                         onClick={(e) => {
                           if(job.link.includes('hssc.gov.in')||job.link.includes('hpsc.gov.in')){

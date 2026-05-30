@@ -111,13 +111,13 @@ export default function Services({ lang, onNavigateToPortal, session }) {
       <div className="flex-1 overflow-y-auto no-scrollbar pb-8 flex flex-col">
 
         {/* ── Green Hero ── */}
-        <div className="relative shrink-0" style={{ background: G }}>
+        <div className="relative shrink-0 overflow-hidden" style={{ background: G }}>
           <div className="absolute top-0 right-0 w-40 h-40 rounded-full pointer-events-none"
-            style={{ background: 'rgba(27,94,59,0.45)', transform: 'translate(35%,-35%)' }} />
+            style={{ background: 'rgba(27,94,59,0.45)', transform: 'translate(30%,-30%)' }} />
           <div className="absolute bottom-8 left-0 w-24 h-24 rounded-full pointer-events-none"
-            style={{ background: 'rgba(110,231,183,0.07)', transform: 'translate(-25%,0)' }} />
+            style={{ background: 'rgba(110,231,183,0.07)', transform: 'translate(-20%,0)' }} />
 
-          <div className="relative z-10 px-5 pt-5 pb-2">
+          <div className="relative z-10" style={{ padding: '20px 20px 8px' }}>
             <p className="text-green-300 text-xs font-semibold mb-1">
               🔧 {lang === 'en' ? 'Local Services' : 'स्थानीय सेवाएं'}
             </p>
@@ -129,7 +129,7 @@ export default function Services({ lang, onNavigateToPortal, session }) {
             </p>
 
             {/* Search inside hero */}
-            <div className="bg-white/12 backdrop-blur-sm border border-white/15 rounded-2xl px-4 py-3 flex items-center gap-3 mb-2">
+            <div className="bg-white/12 backdrop-blur-sm border border-white/15 rounded-full px-4 py-3 flex items-center gap-3 mb-2">
               <Search size={15} className="text-white/50 shrink-0" />
               <input
                 type="text"
@@ -168,27 +168,23 @@ export default function Services({ lang, onNavigateToPortal, session }) {
           </div>
         </div>
 
-        {/* Category icons horizontal scroll */}
-        <div className="px-4 mb-3 overflow-x-auto no-scrollbar">
-          <div className="flex gap-4">
-            {categories.map(cat => (
-              <button
-                key={cat.id}
-                onClick={() => { setActiveCategory(cat.id); setSearchQuery(''); }}
-                className="active-press flex flex-col items-center gap-1.5 shrink-0"
-              >
-                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-2xl shadow-sm border-2 transition-all ${
-                  activeCategory === cat.id
-                    ? 'border-[#F97316] bg-orange-50 shadow-orange-200'
-                    : 'border-gray-200 bg-white'
-                }`}>
-                  {cat.icon}
-                </div>
-                <span className={`text-[10px] font-bold truncate max-w-[56px] ${activeCategory === cat.id ? 'text-[#F97316]' : 'text-gray-500'}`}>
-                  {cat.label}
-                </span>
-              </button>
-            ))}
+        {/* Category select dropdown */}
+        <div className="px-4 mb-4">
+          <div className="relative">
+            <select
+              value={activeCategory}
+              onChange={e => { setActiveCategory(e.target.value); setSearchQuery(''); }}
+              className="w-full bg-white border-2 border-gray-200 focus:border-orange-400 rounded-full pl-4 pr-10 py-3 text-sm font-bold text-[#0F3D27] outline-none transition-all appearance-none"
+            >
+              {categories.map(cat => (
+                <option key={cat.id} value={cat.id}>
+                  {cat.icon} {cat.label}
+                </option>
+              ))}
+            </select>
+            <span className="absolute inset-y-0 right-4 flex items-center pointer-events-none text-gray-400">
+              <ChevronDown size={16} strokeWidth={2} />
+            </span>
           </div>
         </div>
 
@@ -203,7 +199,7 @@ export default function Services({ lang, onNavigateToPortal, session }) {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder={lang === 'en' ? 'Search by name or location...' : 'नाम या स्थान से खोजें...'}
-              className="w-full bg-white border-2 border-gray-200 focus:border-orange-400 rounded-2xl pl-10 pr-10 py-3 text-sm text-[#0F3D27] placeholder-gray-400 outline-none transition-all"
+              className="w-full bg-white border-2 border-gray-200 focus:border-orange-400 rounded-full pl-10 pr-10 py-3 text-sm text-[#0F3D27] placeholder-gray-400 outline-none transition-all"
             />
             {searchQuery && (
               <button onClick={() => setSearchQuery('')} className="absolute inset-y-0 right-3.5 flex items-center text-gray-400">
@@ -267,14 +263,14 @@ export default function Services({ lang, onNavigateToPortal, session }) {
                       <div className="flex gap-2">
                         <button
                           onClick={() => handleWhatsApp(provider.phone)}
-                          className="active-press flex-1 py-3 rounded-2xl border-2 border-[#0F3D27] text-[#0F3D27] font-bold text-xs flex items-center justify-center gap-1.5 hover:bg-gray-50 transition-colors"
+                          className="active-press flex-1 py-3 rounded-full border-2 border-[#0F3D27] text-[#0F3D27] font-bold text-xs flex items-center justify-center gap-1.5 hover:bg-gray-50 transition-colors"
                         >
                           <MessageCircle size={13} strokeWidth={1.5} />
                           {lang === 'en' ? 'Message' : 'संदेश'}
                         </button>
                         <button
                           onClick={() => handleOpenProfile(provider)}
-                          className="active-press flex-1 py-3 rounded-2xl bg-[#F97316] text-white font-bold text-xs flex items-center justify-center gap-1.5 hover:bg-[#EA6C0A] transition-colors shadow-sm"
+                          className="active-press flex-1 py-3 rounded-full bg-[#F97316] text-white font-bold text-xs flex items-center justify-center gap-1.5 hover:bg-[#EA6C0A] transition-colors shadow-sm"
                         >
                           <Phone size={13} strokeWidth={2} />
                           {lang === 'en' ? 'Book Now' : 'अभी बुक करें'}
@@ -500,13 +496,13 @@ export default function Services({ lang, onNavigateToPortal, session }) {
                   placeholder={lang === 'en' ? 'Your feedback...' : 'आपकी प्रतिक्रिया...'}
                   value={revComment}
                   onChange={(e) => setRevComment(e.target.value)}
-                  className="bg-white border-2 border-gray-200 rounded-xl p-3 text-sm text-[#0F3D27] placeholder-gray-400 focus:outline-none focus:border-orange-400 resize-none"
+                  className="bg-white border-2 border-gray-200 rounded-3xl p-3 text-sm text-[#0F3D27] placeholder-gray-400 focus:outline-none focus:border-orange-400 resize-none"
                 />
 
                 <button
                   type="button"
                   onClick={handleReviewSubmit}
-                  className="bg-[#F97316] text-white font-bold py-3 rounded-xl text-sm active-press w-full uppercase tracking-wider hover:bg-[#EA6C0A] transition-colors"
+                  className="bg-[#F97316] text-white font-bold py-3 rounded-full text-sm active-press w-full uppercase tracking-wider hover:bg-[#EA6C0A] transition-colors"
                 >
                   {lang === 'en' ? 'Submit Review' : 'समीक्षा भेजें'}
                 </button>
@@ -521,14 +517,14 @@ export default function Services({ lang, onNavigateToPortal, session }) {
           <div className="px-4 py-4 bg-white border-t border-gray-200 flex gap-3 shrink-0">
             <button
               onClick={() => handleWhatsApp(selectedProvider.phone)}
-              className="active-press flex-1 py-3.5 rounded-2xl border-2 border-[#0F3D27] text-[#0F3D27] font-bold text-sm flex items-center justify-center gap-2 hover:bg-gray-50 transition-colors"
+              className="active-press flex-1 py-3.5 rounded-full border-2 border-[#0F3D27] text-[#0F3D27] font-bold text-sm flex items-center justify-center gap-2 hover:bg-gray-50 transition-colors"
             >
               <MessageCircle size={16} strokeWidth={1.5} />
               {lang === 'en' ? 'Message' : 'संदेश'}
             </button>
             <button
               onClick={() => handleCall(selectedProvider.name[lang], selectedProvider.phone)}
-              className="active-press flex-1 py-3.5 rounded-2xl bg-[#F97316] text-white font-bold text-sm flex items-center justify-center gap-2 hover:bg-[#EA6C0A] transition-colors shadow-md shadow-orange-200"
+              className="active-press flex-1 py-3.5 rounded-full bg-[#F97316] text-white font-bold text-sm flex items-center justify-center gap-2 hover:bg-[#EA6C0A] transition-colors shadow-md shadow-orange-200"
             >
               <Phone size={16} strokeWidth={2} />
               {lang === 'en' ? 'Book Now' : 'अभी बुक करें'}

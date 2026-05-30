@@ -54,13 +54,13 @@ export default function Schemes({ lang }) {
     <div className="flex-1 overflow-y-auto no-scrollbar flex flex-col bg-[#F2F9F5]">
 
       {/* ── Green Hero ── */}
-      <div className="relative shrink-0" style={{ background: G }}>
+      <div className="relative shrink-0 overflow-hidden" style={{ background: G }}>
         <div className="absolute top-0 right-0 w-40 h-40 rounded-full pointer-events-none"
-          style={{ background: 'rgba(27,94,59,0.45)', transform: 'translate(35%,-35%)' }} />
+          style={{ background: 'rgba(27,94,59,0.45)', transform: 'translate(30%,-30%)' }} />
         <div className="absolute bottom-8 left-0 w-24 h-24 rounded-full pointer-events-none"
-          style={{ background: 'rgba(110,231,183,0.07)', transform: 'translate(-25%,0)' }} />
+          style={{ background: 'rgba(110,231,183,0.07)', transform: 'translate(-20%,0)' }} />
 
-        <div className="relative z-10 px-5 pt-5 pb-2">
+        <div className="relative z-10" style={{ padding: '20px 20px 8px' }}>
           <p className="text-green-300 text-xs font-semibold mb-1">
             📋 {lang === 'en' ? 'Government Schemes' : 'सरकारी योजनाएं'}
           </p>
@@ -72,7 +72,7 @@ export default function Schemes({ lang }) {
           </p>
 
           {/* Search inside hero */}
-          <div className="bg-white/12 backdrop-blur-sm border border-white/15 rounded-2xl px-4 py-3 flex items-center gap-3 mb-2">
+          <div className="bg-white/12 backdrop-blur-sm border border-white/15 rounded-full px-4 py-3 flex items-center gap-3 mb-2">
             <Search size={15} className="text-white/50 shrink-0" />
             <input
               type="text"
@@ -199,7 +199,7 @@ export default function Schemes({ lang }) {
                   {/* Toggle eligibility */}
                   <button
                     onClick={() => toggleExpand(scheme.id)}
-                    className="active-press flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-bold border transition-all"
+                    className="active-press flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-full text-xs font-bold border transition-all"
                     style={{
                       color: isOpen ? '#0F3D27' : '#52786A',
                       borderColor: isOpen ? '#0F3D27' : '#D4EBD9',
@@ -215,7 +215,7 @@ export default function Schemes({ lang }) {
                   {/* Apply CTA */}
                   <button
                     onClick={() => alert(`${t.applyNow}: ${scheme.name[lang]}`)}
-                    className="active-press flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-bold text-white"
+                    className="active-press flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-full text-xs font-bold text-white"
                     style={{ background: 'linear-gradient(135deg, #F97316, #EA6C0A)', boxShadow: '0 4px 12px rgba(249,115,22,0.25)' }}
                   >
                     <ExternalLink size={12} strokeWidth={2.5} />

@@ -40,8 +40,8 @@ const Wave = ({ color = '#F2F9F5' }) => (
   </svg>
 );
 
-const inputCls = "w-full bg-white border border-gray-200 rounded-2xl pl-11 pr-4 py-3.5 text-sm text-[#0D2B1A] placeholder-gray-400 outline-none focus:border-[#1B5E3B] focus:ring-2 focus:ring-green-100 transition-all";
-const inputPlain = "w-full bg-white border border-gray-200 rounded-2xl px-4 py-3.5 text-sm text-[#0D2B1A] placeholder-gray-400 outline-none focus:border-[#1B5E3B] focus:ring-2 focus:ring-green-100 transition-all";
+const inputCls = "w-full bg-white border border-gray-200 rounded-full pl-11 pr-4 py-3.5 text-sm text-[#0D2B1A] placeholder-gray-400 outline-none focus:border-[#1B5E3B] focus:ring-2 focus:ring-green-100 transition-all";
+const inputPlain = "w-full bg-white border border-gray-200 rounded-full px-4 py-3.5 text-sm text-[#0D2B1A] placeholder-gray-400 outline-none focus:border-[#1B5E3B] focus:ring-2 focus:ring-green-100 transition-all";
 
 const Field = ({ icon: Icon, children }) => (
   <div className="relative">
@@ -54,7 +54,7 @@ const Field = ({ icon: Icon, children }) => (
 
 const OBtn = ({ children, type = 'submit', onClick }) => (
   <button type={type} onClick={onClick}
-    className="active-press w-full py-4 rounded-2xl font-bold text-sm text-white transition-colors"
+    className="active-press w-full py-4 rounded-full font-bold text-sm text-white transition-colors"
     style={{ background: 'linear-gradient(135deg, #F97316, #EA6C0A)', boxShadow: '0 8px 24px rgba(249,115,22,0.3)' }}>
     {children}
   </button>

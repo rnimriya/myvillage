@@ -166,7 +166,7 @@ export default function SuperAdmin({ lang, onLogout }) {
           </div>
           <button
             onClick={onLogout}
-            className="active-press flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/10 border border-white/15 text-white/70 hover:bg-red-500/20 hover:text-red-300 text-xs font-medium transition-all"
+            className="active-press flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/10 border border-white/15 text-white/70 hover:bg-red-500/20 hover:text-red-300 text-xs font-medium transition-all"
           >
             <LogOut size={12} strokeWidth={1.5} />
             <span>{lang === 'en' ? 'Exit' : 'बाहर'}</span>
@@ -192,7 +192,7 @@ export default function SuperAdmin({ lang, onLogout }) {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`active-press flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition-all border whitespace-nowrap ${
+              className={`active-press flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-bold transition-all border whitespace-nowrap ${
                 isActive
                   ? 'bg-forest-teal-700 border-forest-teal-700 text-white shadow-md shadow-forest-teal-700/20'
                   : 'bg-[#FAF7F2] border-[#E8E0D4] text-[#8A7560] hover:bg-[#F5ECD8] hover:text-slate-700'
@@ -213,7 +213,7 @@ export default function SuperAdmin({ lang, onLogout }) {
         {activeTab !== 'providers' && activeTab !== 'kyc' && (
           <button
             onClick={() => { setFormFields({}); setShowAddModal(true); }}
-            className="active-press flex items-center gap-1 px-3 py-1.5 bg-forest-teal-700 hover:bg-forest-teal-600 text-white font-bold text-[10px] rounded-lg tracking-wider transition-colors shadow-sm"
+            className="active-press flex items-center gap-1 px-3 py-1.5 bg-forest-teal-700 hover:bg-forest-teal-600 text-white font-bold text-[10px] rounded-full tracking-wider transition-colors shadow-sm"
           >
             <Plus size={11} strokeWidth={2} />
             <span>{lang === 'en' ? 'ADD NEW' : 'नया जोड़ें'}</span>
@@ -236,7 +236,7 @@ export default function SuperAdmin({ lang, onLogout }) {
             </div>
             <button
               onClick={() => handleDelete(item.id, 'announcements')}
-              className="w-8 h-8 rounded-xl bg-red-50 hover:bg-red-100 text-red-500 flex items-center justify-center shrink-0 border border-red-100 transition-colors"
+              className="w-8 h-8 rounded-full bg-red-50 hover:bg-red-100 text-red-500 flex items-center justify-center shrink-0 border border-red-100 transition-colors"
             >
               <Trash2 size={14} strokeWidth={1.5} />
             </button>
@@ -258,7 +258,7 @@ export default function SuperAdmin({ lang, onLogout }) {
             </div>
             <button
               onClick={() => handleDelete(item.id, 'news')}
-              className="w-8 h-8 rounded-xl bg-red-50 hover:bg-red-100 text-red-500 flex items-center justify-center shrink-0 border border-red-100 transition-colors"
+              className="w-8 h-8 rounded-full bg-red-50 hover:bg-red-100 text-red-500 flex items-center justify-center shrink-0 border border-red-100 transition-colors"
             >
               <Trash2 size={14} strokeWidth={1.5} />
             </button>
@@ -277,7 +277,7 @@ export default function SuperAdmin({ lang, onLogout }) {
             </div>
             <button
               onClick={() => handleDelete(item.id, 'schemes')}
-              className="w-8 h-8 rounded-xl bg-red-50 hover:bg-red-100 text-red-500 flex items-center justify-center shrink-0 border border-red-100 transition-colors"
+              className="w-8 h-8 rounded-full bg-red-50 hover:bg-red-100 text-red-500 flex items-center justify-center shrink-0 border border-red-100 transition-colors"
             >
               <Trash2 size={14} strokeWidth={1.5} />
             </button>
@@ -299,7 +299,7 @@ export default function SuperAdmin({ lang, onLogout }) {
             </div>
             <button
               onClick={() => handleDelete(item.id, 'leaders')}
-              className="w-8 h-8 rounded-xl bg-red-50 hover:bg-red-100 text-red-500 flex items-center justify-center shrink-0 border border-red-100 transition-colors"
+              className="w-8 h-8 rounded-full bg-red-50 hover:bg-red-100 text-red-500 flex items-center justify-center shrink-0 border border-red-100 transition-colors"
             >
               <Trash2 size={14} strokeWidth={1.5} />
             </button>
@@ -331,7 +331,7 @@ export default function SuperAdmin({ lang, onLogout }) {
                 {item.status === 'pending' && (
                   <button
                     onClick={() => handleApproveProvider(item.id)}
-                    className="w-8 h-8 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-600 flex items-center justify-center border border-emerald-200 transition-colors"
+                    className="w-8 h-8 rounded-full bg-emerald-50 hover:bg-emerald-100 text-emerald-600 flex items-center justify-center border border-emerald-200 transition-colors"
                     title="Approve"
                   >
                     <Check size={14} strokeWidth={2} />
@@ -339,7 +339,7 @@ export default function SuperAdmin({ lang, onLogout }) {
                 )}
                 <button
                   onClick={() => handleDelete(item.id, 'providers')}
-                  className="w-8 h-8 rounded-xl bg-red-50 hover:bg-red-100 text-red-500 flex items-center justify-center border border-red-100 transition-colors"
+                  className="w-8 h-8 rounded-full bg-red-50 hover:bg-red-100 text-red-500 flex items-center justify-center border border-red-100 transition-colors"
                   title="Remove"
                 >
                   <Trash2 size={14} strokeWidth={1.5} />
@@ -378,7 +378,7 @@ export default function SuperAdmin({ lang, onLogout }) {
             </div>
             <button
               onClick={() => handleDelete(item.id, 'schools')}
-              className="w-8 h-8 rounded-xl bg-red-50 hover:bg-red-100 text-red-500 flex items-center justify-center shrink-0 border border-red-100 transition-colors"
+              className="w-8 h-8 rounded-full bg-red-50 hover:bg-red-100 text-red-500 flex items-center justify-center shrink-0 border border-red-100 transition-colors"
             >
               <Trash2 size={14} strokeWidth={1.5} />
             </button>
@@ -397,7 +397,7 @@ export default function SuperAdmin({ lang, onLogout }) {
             </div>
             <button
               onClick={() => handleDelete(item.id, 'jobs')}
-              className="w-8 h-8 rounded-xl bg-red-50 hover:bg-red-100 text-red-500 flex items-center justify-center shrink-0 border border-red-100 transition-colors"
+              className="w-8 h-8 rounded-full bg-red-50 hover:bg-red-100 text-red-500 flex items-center justify-center shrink-0 border border-red-100 transition-colors"
             >
               <Trash2 size={14} strokeWidth={1.5} />
             </button>
@@ -432,14 +432,14 @@ export default function SuperAdmin({ lang, onLogout }) {
             <div className="flex gap-2">
               <button
                 onClick={() => handleApproveKYC(item.id)}
-                className="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold rounded-xl transition-colors shadow-sm"
+                className="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold rounded-full transition-colors shadow-sm"
               >
                 <Check size={13} strokeWidth={2} />
                 {lang === 'en' ? 'Approve KYC' : 'स्वीकृत करें'}
               </button>
               <button
                 onClick={() => { setKycRejectTarget(item.id); setKycRejectNote(''); setShowKYCRejectModal(true); }}
-                className="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-red-50 border border-red-200 hover:bg-red-100 text-red-500 text-xs font-bold rounded-xl transition-colors"
+                className="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-red-50 border border-red-200 hover:bg-red-100 text-red-500 text-xs font-bold rounded-full transition-colors"
               >
                 <X size={13} strokeWidth={2} />
                 {lang === 'en' ? 'Reject' : 'अस्वीकार'}
@@ -487,12 +487,12 @@ export default function SuperAdmin({ lang, onLogout }) {
             </div>
             <div className="flex gap-3">
               <button onClick={() => setShowKYCRejectModal(false)}
-                className="flex-1 py-2.5 bg-[#F5ECD8] border border-[#E8E0D4] text-slate-600 font-bold text-xs rounded-xl">
+                className="flex-1 py-2.5 bg-[#F5ECD8] border border-[#E8E0D4] text-slate-600 font-bold text-xs rounded-full">
                 {lang === 'en' ? 'Cancel' : 'रद्द करें'}
               </button>
               <button onClick={handleRejectKYC}
                 disabled={!kycRejectNote.trim()}
-                className="flex-1 py-2.5 bg-red-500 hover:bg-red-600 disabled:bg-gray-200 disabled:text-gray-400 text-white font-bold text-xs rounded-xl transition-colors">
+                className="flex-1 py-2.5 bg-red-500 hover:bg-red-600 disabled:bg-gray-200 disabled:text-gray-400 text-white font-bold text-xs rounded-full transition-colors">
                 {lang === 'en' ? 'Reject KYC' : 'अस्वीकार करें'}
               </button>
             </div>

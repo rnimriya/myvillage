@@ -33,7 +33,7 @@ const CATEGORIES = [
   { id: 'sports',       en: 'Sports Coach',     hi: 'खेल कोच',        icon: '🏆' },
 ];
 
-const inputCls = "w-full bg-[#F2F9F5] border border-gray-200 rounded-xl px-3.5 py-3 text-sm text-[#0D2B1A] placeholder-gray-400 outline-none focus:border-[#1B5E3B] focus:bg-white transition-all";
+const inputCls = "w-full bg-[#F2F9F5] border border-gray-200 rounded-full px-3.5 py-3 text-sm text-[#0D2B1A] placeholder-gray-400 outline-none focus:border-[#1B5E3B] focus:bg-white transition-all";
 const labelCls = "block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1.5";
 
 const SectionCard = ({ icon, title, badge, children }) => (
@@ -158,11 +158,11 @@ export default function Dashboard({ provider, onLogout, lang }) {
     <div className="flex-1 overflow-y-auto no-scrollbar flex flex-col bg-[#F2F9F5]">
 
       {/* ── Green Profile Hero ── */}
-      <div className="relative shrink-0" style={{ background: G }}>
+      <div className="relative shrink-0 overflow-hidden" style={{ background: G }}>
         <div className="absolute top-0 right-0 w-40 h-40 rounded-full pointer-events-none"
-          style={{ background: 'rgba(27,94,59,0.45)', transform: 'translate(35%,-35%)' }} />
+          style={{ background: 'rgba(27,94,59,0.45)', transform: 'translate(30%,-30%)' }} />
 
-        <div className="relative z-10 px-5 pt-5 pb-2">
+        <div className="relative z-10" style={{ padding: '20px 20px 8px' }}>
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
               <div className="w-16 h-16 rounded-2xl border-2 border-white/30 overflow-hidden bg-white/20 flex items-center justify-center shrink-0 shadow-lg">
@@ -179,7 +179,7 @@ export default function Dashboard({ provider, onLogout, lang }) {
               </div>
             </div>
             <button onClick={onLogout}
-              className="active-press flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/15 border border-white/25 text-white text-xs font-semibold shrink-0">
+              className="active-press flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/15 border border-white/25 text-white text-xs font-semibold shrink-0">
               <LogOut size={12} strokeWidth={1.5} />
               {lang === 'en' ? 'Logout' : 'बाहर'}
             </button>

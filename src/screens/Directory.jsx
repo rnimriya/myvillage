@@ -148,7 +148,7 @@ export default function Directory({ lang }) {
                 <div className="flex gap-2 px-4 pb-4">
                   <button
                     onClick={(e) => { e.stopPropagation(); handleCall(leader.name[lang], leader.phone); }}
-                    className={`active-press flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-white text-xs font-bold transition-colors ${
+                    className={`active-press flex-1 flex items-center justify-center gap-2 py-2.5 rounded-full text-white text-xs font-bold transition-colors ${
                       accentColor === 'sky' ? 'bg-sky-blue hover:bg-sky-600' : 'bg-coral hover:bg-coral-dark'
                     }`}
                   >
@@ -157,7 +157,7 @@ export default function Directory({ lang }) {
                   </button>
                   <button
                     onClick={(e) => { e.stopPropagation(); handleWhatsApp(leader.name[lang], leader.whatsapp); }}
-                    className="active-press flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-600 text-xs font-bold transition-colors"
+                    className="active-press flex-1 flex items-center justify-center gap-2 py-2.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-600 text-xs font-bold transition-colors"
                   >
                     <MessageCircle size={13} strokeWidth={1.5} />
                     WhatsApp
@@ -179,13 +179,13 @@ export default function Directory({ lang }) {
     <div className="flex-1 overflow-y-auto no-scrollbar flex flex-col bg-[#F2F9F5]">
 
       {/* ── Green Hero ── */}
-      <div className="relative shrink-0" style={{ background: G }}>
+      <div className="relative shrink-0 overflow-hidden" style={{ background: G }}>
         <div className="absolute top-0 right-0 w-40 h-40 rounded-full pointer-events-none"
-          style={{ background: 'rgba(27,94,59,0.45)', transform: 'translate(35%,-35%)' }} />
+          style={{ background: 'rgba(27,94,59,0.45)', transform: 'translate(30%,-30%)' }} />
         <div className="absolute bottom-8 left-0 w-24 h-24 rounded-full pointer-events-none"
-          style={{ background: 'rgba(110,231,183,0.07)', transform: 'translate(-25%,0)' }} />
+          style={{ background: 'rgba(110,231,183,0.07)', transform: 'translate(-20%,0)' }} />
 
-        <div className="relative z-10 px-5 pt-5 pb-2">
+        <div className="relative z-10" style={{ padding: '20px 20px 8px' }}>
           <div className="flex items-start justify-between mb-1">
             <div>
               <p className="text-green-300 text-xs font-semibold mb-1">
@@ -215,7 +215,7 @@ export default function Directory({ lang }) {
 
           {/* Search inside hero (public mode only) */}
           {!isAdminMode && (
-            <div className="bg-white/12 backdrop-blur-sm border border-white/15 rounded-2xl px-4 py-3 flex items-center gap-3 mt-4 mb-2">
+            <div className="bg-white/12 backdrop-blur-sm border border-white/15 rounded-full px-4 py-3 flex items-center gap-3 mt-4 mb-2">
               <Search size={15} className="text-white/50 shrink-0" />
               <input
                 type="text"
@@ -288,12 +288,12 @@ export default function Directory({ lang }) {
                       )}
                       <div className="flex gap-2">
                         <button onClick={() => handleApprove(provider.id, provider.name[lang])}
-                          className="active-press flex-1 py-2.5 bg-emerald-500 text-white rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 shadow-sm">
+                          className="active-press flex-1 py-2.5 bg-emerald-500 text-white rounded-full font-bold text-xs flex items-center justify-center gap-1.5 shadow-sm">
                           <Check size={13} strokeWidth={2} />
                           {lang === 'en' ? 'Approve' : 'स्वीकार'}
                         </button>
                         <button onClick={() => handleReject(provider.id, provider.name[lang])}
-                          className="active-press flex-1 py-2.5 bg-red-50 border border-red-200 text-red-500 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5">
+                          className="active-press flex-1 py-2.5 bg-red-50 border border-red-200 text-red-500 rounded-full font-bold text-xs flex items-center justify-center gap-1.5">
                           <X size={13} strokeWidth={2} />
                           {lang === 'en' ? 'Reject' : 'अस्वीकार'}
                         </button>

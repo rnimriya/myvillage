@@ -72,6 +72,12 @@ body {
   -webkit-tap-highlight-color: transparent;
 }
 
+#root {
+  width: 100%;
+  min-height: 100dvh;
+  display: flex;
+}
+
 .bg-app { background-color: var(--color-app-bg); }
 
 html {
@@ -112,7 +118,7 @@ button, a, [role="button"], input, select, textarea, label {
   background: var(--color-app-bg);
   border: 1px solid var(--color-app-border);
   padding: 0.875rem 1rem;
-  border-radius: 1rem;
+  border-radius: 9999px;
   font-size: 0.9375rem; /* 15px — Inter reads crisply at this size */
   font-weight: 400;
   color: var(--color-app-text);
@@ -139,7 +145,7 @@ button, a, [role="button"], input, select, textarea, label {
   justify-content: center;
   gap: 0.5rem;
   padding: 0.875rem 1rem;
-  border-radius: 0.75rem;
+  border-radius: 9999px;
   font-weight: 600;
   letter-spacing: 0.01em;
   cursor: pointer;

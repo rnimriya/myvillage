@@ -31,13 +31,13 @@ export default function Education({ lang }) {
     <div className="flex-1 overflow-y-auto no-scrollbar flex flex-col bg-[#F2F9F5]">
 
       {/* ── Green Hero ── */}
-      <div className="relative shrink-0" style={{ background: G }}>
+      <div className="relative shrink-0 overflow-hidden" style={{ background: G }}>
         <div className="absolute top-0 right-0 w-40 h-40 rounded-full pointer-events-none"
-          style={{ background: 'rgba(27,94,59,0.45)', transform: 'translate(35%,-35%)' }} />
+          style={{ background: 'rgba(27,94,59,0.45)', transform: 'translate(30%,-30%)' }} />
         <div className="absolute bottom-8 left-0 w-24 h-24 rounded-full pointer-events-none"
-          style={{ background: 'rgba(110,231,183,0.07)', transform: 'translate(-25%,0)' }} />
+          style={{ background: 'rgba(110,231,183,0.07)', transform: 'translate(-20%,0)' }} />
 
-        <div className="relative z-10 px-5 pt-5 pb-2">
+        <div className="relative z-10" style={{ padding: '20px 20px 8px' }}>
           <p className="text-green-300 text-xs font-semibold mb-1">
             🎓 {lang === 'en' ? 'Schools & Education' : 'स्कूल और शिक्षा'}
           </p>

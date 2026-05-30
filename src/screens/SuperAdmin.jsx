@@ -1,11 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { db } from '../data/db';
 import { translations } from '../data/translations';
 import {
-  ShieldCheck, LogOut, Trash2, Plus, Pencil,
+  ShieldCheck, LogOut, Trash2, Plus, Pencil, Upload, ImagePlus,
   Megaphone, MessageSquare, Award, Users, Wrench, GraduationCap, X, Check, Briefcase,
   BadgeCheck, FileText, Calendar, User
 } from 'lucide-react';
+
+const compressImage = (file, callback) => {
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const img = new Image();
+    img.onload = () => {
+      const maxW = 900;
+      const scale = img.width > maxW ? maxW / img.width : 1;
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.round(img.width * scale);
+      canvas.height = Math.round(img.height * scale);
+      canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+      callback(canvas.toDataURL('image/jpeg', 0.78));
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+};
 
 export default function SuperAdmin({ lang, onLogout }) {
   const t = translations[lang];
@@ -33,6 +51,9 @@ export default function SuperAdmin({ lang, onLogout }) {
 
   const [showAddModal, setShowAddModal] = useState(false);
   const [formFields, setFormFields] = useState({});
+
+  const addNewsImgRef  = useRef(null);
+  const editNewsImgRef = useRef(null);
 
   const [showEditNewsModal, setShowEditNewsModal] = useState(false);
   const [editingNews, setEditingNews] = useState(null);
@@ -611,7 +632,33 @@ export default function SuperAdmin({ lang, onLogout }) {
                     <div className="space-y-1"><label className={labelCls}>Author (EN)</label><input type="text" required onChange={(e) => setFormFields({...formFields, authorEn: e.target.value})} className={inputCls} /></div>
                     <div className="space-y-1"><label className={labelCls}>लेखक (HI)</label><input type="text" required onChange={(e) => setFormFields({...formFields, authorHi: e.target.value})} className={inputCls} /></div>
                   </div>
-                  <div className="space-y-1"><label className={labelCls}>Photo URL</label><input type="text" onChange={(e) => setFormFields({...formFields, image: e.target.value})} className={inputCls} placeholder="https://..." /></div>
+                  {/* Image upload */}
+                  <div className="space-y-1">
+                    <label className={labelCls}>{lang === 'en' ? 'Feature Image' : 'फ़ीचर छवि'}</label>
+                    <div
+                      onClick={() => addNewsImgRef.current.click()}
+                      className="relative w-full h-36 rounded-2xl border-2 border-dashed border-[#D4EBD9] bg-[#F2F9F5] flex flex-col items-center justify-center cursor-pointer hover:border-[#1B5E3B] transition-colors overflow-hidden"
+                    >
+                      {formFields.image ? (
+                        <>
+                          <img src={formFields.image} alt="" className="w-full h-full object-cover" />
+                          <button type="button"
+                            onClick={e => { e.stopPropagation(); setFormFields({...formFields, image: ''}); }}
+                            className="absolute top-2 right-2 w-6 h-6 rounded-full bg-black/55 text-white flex items-center justify-center">
+                            <X size={12} />
+                          </button>
+                        </>
+                      ) : (
+                        <>
+                          <ImagePlus size={22} className="text-[#52786A] mb-1.5" />
+                          <span className="text-xs font-bold text-[#52786A]">{lang === 'en' ? 'Tap to upload photo' : 'फोटो अपलोड करें'}</span>
+                          <span className="text-[10px] text-[#92B4A4] mt-0.5">JPG · PNG · WEBP</span>
+                        </>
+                      )}
+                    </div>
+                    <input ref={addNewsImgRef} type="file" accept="image/*" className="hidden"
+                      onChange={e => { const f = e.target.files[0]; if (f) compressImage(f, url => setFormFields({...formFields, image: url})); e.target.value = ''; }} />
+                  </div>
                   <div className="space-y-1"><label className={labelCls}>Description (EN)</label><textarea required onChange={(e) => setFormFields({...formFields, descEn: e.target.value})} rows="2" className={inputCls}></textarea></div>
                   <div className="space-y-1"><label className={labelCls}>विवरण (HI)</label><textarea required onChange={(e) => setFormFields({...formFields, descHi: e.target.value})} rows="2" className={inputCls}></textarea></div>
                 </>
@@ -763,13 +810,6 @@ export default function SuperAdmin({ lang, onLogout }) {
               </button>
             </div>
 
-            {/* Preview strip */}
-            {editNewsFields.image && (
-              <div className="w-full h-24 overflow-hidden bg-[#F5ECD8] shrink-0">
-                <img src={editNewsFields.image} alt="" className="w-full h-full object-cover" />
-              </div>
-            )}
-
             {/* Edit form */}
             <form onSubmit={handleEditNewsSubmit} className="p-5 overflow-y-auto no-scrollbar flex-1 space-y-4">
               <div className="grid grid-cols-2 gap-3">
@@ -802,9 +842,32 @@ export default function SuperAdmin({ lang, onLogout }) {
                   <input type="text" required value={editNewsFields.authorHi} onChange={e => setEditNewsFields({...editNewsFields, authorHi: e.target.value})} className={inputCls} />
                 </div>
               </div>
+              {/* Image upload */}
               <div className="space-y-1">
-                <label className={labelCls}>Photo URL</label>
-                <input type="text" value={editNewsFields.image} onChange={e => setEditNewsFields({...editNewsFields, image: e.target.value})} className={inputCls} placeholder="https://..." />
+                <label className={labelCls}>{lang === 'en' ? 'Feature Image' : 'फ़ीचर छवि'}</label>
+                <div
+                  onClick={() => editNewsImgRef.current.click()}
+                  className="relative w-full h-36 rounded-2xl border-2 border-dashed border-[#D4EBD9] bg-[#F2F9F5] flex flex-col items-center justify-center cursor-pointer hover:border-[#1B5E3B] transition-colors overflow-hidden"
+                >
+                  {editNewsFields.image ? (
+                    <>
+                      <img src={editNewsFields.image} alt="" className="w-full h-full object-cover" />
+                      <button type="button"
+                        onClick={e => { e.stopPropagation(); setEditNewsFields({...editNewsFields, image: ''}); }}
+                        className="absolute top-2 right-2 w-6 h-6 rounded-full bg-black/55 text-white flex items-center justify-center">
+                        <X size={12} />
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <ImagePlus size={22} className="text-[#52786A] mb-1.5" />
+                      <span className="text-xs font-bold text-[#52786A]">{lang === 'en' ? 'Tap to upload photo' : 'फोटो अपलोड करें'}</span>
+                      <span className="text-[10px] text-[#92B4A4] mt-0.5">JPG · PNG · WEBP</span>
+                    </>
+                  )}
+                </div>
+                <input ref={editNewsImgRef} type="file" accept="image/*" className="hidden"
+                  onChange={e => { const f = e.target.files[0]; if (f) compressImage(f, url => setEditNewsFields({...editNewsFields, image: url})); e.target.value = ''; }} />
               </div>
               <div className="space-y-1">
                 <label className={labelCls}>Description (EN)</label>

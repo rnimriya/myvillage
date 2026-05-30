@@ -67,18 +67,12 @@ export default function HomeFeed({ lang, onNavigate }) {
           {/* Top row */}
           <div className="flex items-start justify-between mb-4">
             <div className="min-w-0 flex-1 pr-3">
-              <p className="text-green-300 text-xs font-semibold">
+              <p className="text-green-300 text-base font-bold">
                 🌱 {lang==='en'?'Good Morning':'शुभ प्रभात'}
               </p>
               <h2 className="text-[21px] font-black text-white mt-0.5 leading-tight">
                 {lang==='en'?'Lohari Jatu':'लोहारी जाटू'}
               </h2>
-              <div className="flex items-center gap-1 mt-0.5">
-                <MapPin size={10} className="text-white/45 shrink-0" />
-                <span className="text-[11px] text-white/45 font-medium">
-                  {lang==='en'?'Charkhi Dadri, Haryana':'चरखी दादरी, हरियाणा'}
-                </span>
-              </div>
             </div>
             <div className="relative shrink-0">
               <div className="w-10 h-10 rounded-full bg-white/15 border border-white/20 flex items-center justify-center">

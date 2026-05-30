@@ -20,9 +20,6 @@ export default function Header({ lang, onLangChange, session, onPortalClick }) {
             <h1 className="text-[22px] font-black text-white leading-tight truncate tracking-tight">
               {t.appTitle}
             </h1>
-            <p className="text-[10px] text-white/65 font-semibold uppercase tracking-[0.10em] truncate">
-              {t.appSubtitle}
-            </p>
           </div>
         </div>
 

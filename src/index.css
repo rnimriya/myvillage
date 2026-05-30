@@ -139,6 +139,12 @@ button, a, [role="button"], input, select, textarea, label {
 }
 .form-input::placeholder { color: var(--color-app-subtle); }
 
+textarea.form-input {
+  border-radius: 1rem;
+  padding: 0.75rem 1rem;
+  resize: none;
+}
+
 .form-button {
   display: inline-flex;
   align-items: center;

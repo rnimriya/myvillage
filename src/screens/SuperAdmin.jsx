@@ -190,8 +190,8 @@ export default function SuperAdmin({ lang, onLogout }) {
     setFormFields({});
   };
 
-  const inputCls = "form-input w-full text-sm p-2.5";
-  const labelCls = "text-sm font-bold text-[#8A7560] uppercase tracking-wider";
+  const inputCls = "form-input w-full text-sm";
+  const labelCls = "form-label block mb-1.5";
 
   return (
     <div className="flex-1 overflow-hidden flex flex-col bg-[#FAF7F2]">
@@ -571,12 +571,12 @@ export default function SuperAdmin({ lang, onLogout }) {
             </div>
             <div className="flex gap-3">
               <button onClick={() => setShowKYCRejectModal(false)}
-                className="flex-1 py-2.5 bg-[#F5ECD8] border border-[#E8E0D4] text-slate-600 font-bold text-xs rounded-full">
+                className="form-button secondary flex-1">
                 {lang === 'en' ? 'Cancel' : 'रद्द करें'}
               </button>
               <button onClick={handleRejectKYC}
                 disabled={!kycRejectNote.trim()}
-                className="flex-1 py-2.5 bg-red-500 hover:bg-red-600 disabled:bg-gray-200 disabled:text-gray-400 text-white font-bold text-xs rounded-full transition-colors">
+                className="form-button flex-1 bg-red-500 hover:bg-red-600 disabled:bg-gray-200 disabled:text-gray-400 text-white transition-colors">
                 {lang === 'en' ? 'Reject KYC' : 'अस्वीकार करें'}
               </button>
             </div>
@@ -880,12 +880,10 @@ export default function SuperAdmin({ lang, onLogout }) {
 
               <div className="flex gap-3 pt-2">
                 <button type="button" onClick={() => setShowEditNewsModal(false)}
-                  className="flex-1 py-3 rounded-full bg-[#F5ECD8] border border-[#E8D5C0] text-[#8A7560] font-bold text-sm">
+                  className="form-button secondary flex-1">
                   {lang === 'en' ? 'Cancel' : 'रद्द करें'}
                 </button>
-                <button type="submit"
-                  className="flex-1 py-3 rounded-full text-white font-bold text-sm"
-                  style={{ background: 'linear-gradient(135deg, #1B5E3B, #0F3D27)' }}>
+                <button type="submit" className="form-button primary flex-1">
                   {lang === 'en' ? 'Save Changes' : 'सहेजें'}
                 </button>
               </div>

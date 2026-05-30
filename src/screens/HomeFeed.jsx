@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Bell, MapPin, Users, FileText, Wrench, GraduationCap, Briefcase, ImageIcon, Calendar, ChevronDown, ChevronUp, BookOpen, Search } from 'lucide-react';
+import { Bell, MapPin, Users, FileText, Wrench, GraduationCap, Briefcase, ImageIcon, Calendar, ChevronDown, ChevronUp, BookOpen, Search, ExternalLink, CheckCircle2 } from 'lucide-react';
 import { translations } from '../data/translations';
 import { db } from '../data/db';
 
@@ -19,6 +19,15 @@ const catBadge = {
   education:   'bg-indigo-100 text-indigo-700',
   water:       'bg-blue-100 text-blue-700',
   agriculture: 'bg-yellow-100 text-yellow-800',
+};
+
+const ANN_META = {
+  water:       { g: 'linear-gradient(135deg,#0ea5e9,#0369a1)', emoji: '💧' },
+  agriculture: { g: 'linear-gradient(135deg,#16a34a,#14532d)', emoji: '🌾' },
+  heritage:    { g: 'linear-gradient(135deg,#7c3aed,#4c1d95)', emoji: '🏛️' },
+  healthcare:  { g: 'linear-gradient(135deg,#dc2626,#991b1b)', emoji: '🏥' },
+  education:   { g: 'linear-gradient(135deg,#2563eb,#1e40af)', emoji: '🎓' },
+  development: { g: 'linear-gradient(135deg,#0f766e,#134e4a)', emoji: '🏗️' },
 };
 
 const SL = ({ label }) => (
@@ -117,36 +126,49 @@ export default function HomeFeed({ lang, onNavigate }) {
 
         <div className="border-t border-gray-200 mb-4" />
 
-        {/* Announcements */}
+        {/* Announcements — Horizontal Carousel */}
         {announcements.length > 0 && (
           <section className="mb-4">
-            <SL label={lang==='en'?'URGENT ANNOUNCEMENTS':'आपातकालीन घोषणाएं'} />
-            <div className="space-y-3">
-              {announcements.map((a) => {
-                const key = a.badge.en.toLowerCase();
-                const bc = catBadge[key] || 'bg-orange-100 text-orange-800';
-                return (
-                  <div key={a.id} className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-                    <div className="p-4">
-                      <div className="flex items-center gap-2 mb-2">
-                        <span className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full ${bc}`}>
-                          {a.badge[lang]}
-                        </span>
-                        <span className="text-[10px] text-gray-400 flex items-center gap-1">
-                          <Calendar size={9} strokeWidth={1.5} />
-                          {a.date[lang]}
-                        </span>
+            <div className="flex items-center justify-between mb-3">
+              <SL label={lang==='en'?'URGENT ANNOUNCEMENTS':'आपातकालीन घोषणाएं'} />
+              <span className="text-[10px] font-bold text-[#F97316] bg-orange-50 border border-orange-200 px-2 py-0.5 rounded-full">
+                🔴 {announcements.length} {lang==='en'?'Active':'सक्रिय'}
+              </span>
+            </div>
+            <div className="overflow-x-auto no-scrollbar -mx-4">
+              <div className="flex gap-3 px-4" style={{ width: 'max-content' }}>
+                {announcements.map((a) => {
+                  const key = a.badge.en.toLowerCase();
+                  const meta = ANN_META[key] || { g: 'linear-gradient(135deg,#F97316,#ea580c)', emoji: '📢' };
+                  return (
+                    <div key={a.id} className="w-[270px] rounded-2xl overflow-hidden shadow-sm shrink-0 border border-white/60">
+                      {/* Gradient top */}
+                      <div className="p-4" style={{ background: meta.g }}>
+                        <div className="flex items-center justify-between mb-3">
+                          <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full text-white"
+                            style={{ background: 'rgba(255,255,255,0.2)' }}>
+                            {a.badge[lang]}
+                          </span>
+                          <span className="text-[10px] text-white/70 flex items-center gap-1">
+                            <Calendar size={9} /> {a.date[lang]}
+                          </span>
+                        </div>
+                        <div className="text-3xl mb-2">{meta.emoji}</div>
+                        <h3 className="text-sm font-bold text-white leading-snug">{a.title[lang]}</h3>
                       </div>
-                      <h3 className="text-sm font-bold text-[#0D2B1A] leading-snug mb-1">{a.title[lang]}</h3>
-                      <p className="text-xs text-gray-500 leading-relaxed">{a.desc[lang]}</p>
+                      {/* White bottom */}
+                      <div className="bg-white px-4 pt-3 pb-4">
+                        <p className="text-xs text-gray-500 leading-relaxed line-clamp-2 mb-3">{a.desc[lang]}</p>
+                        <button className="active-press w-full flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-bold text-white"
+                          style={{ background: meta.g }}>
+                          <CheckCircle2 size={12} strokeWidth={2.5} />
+                          {lang==='en'?"Mark as Read":'पढ़ लिया'}
+                        </button>
+                      </div>
                     </div>
-                    <button className="w-full py-3 text-xs font-bold text-white active-press"
-                      style={{ background:'linear-gradient(135deg,#F97316,#EA6C0A)' }}>
-                      {lang==='en'?"I've read this":'पढ़ लिया'}
-                    </button>
-                  </div>
-                );
-              })}
+                  );
+                })}
+              </div>
             </div>
           </section>
         )}
@@ -199,44 +221,61 @@ export default function HomeFeed({ lang, onNavigate }) {
           </div>
         </section>
 
-        {/* Jobs */}
+        {/* Jobs — Board Style */}
         {jobsList.length > 0 && (
           <>
             <div className="border-t border-gray-200 mb-4" />
             <section className="pb-8">
-              <SL label={lang==='en'?'GOVERNMENT JOBS':'सरकारी नौकरियां'} />
-              <div className="space-y-4">
+              <div className="flex items-center justify-between mb-3">
+                <SL label={lang==='en'?'GOVERNMENT JOBS':'सरकारी नौकरियां'} />
+                <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
+                  {jobsList.length} {lang==='en'?'Open':'खुले'}
+                </span>
+              </div>
+              <div className="space-y-3">
                 {jobsList.map((job) => (
-                  <div key={job.id} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 flex flex-col gap-3">
-                    <div>
-                      <h4 className="text-[10px] font-bold text-[#4B91F1] uppercase tracking-wider">🏛️ {job.department[lang]}</h4>
-                      <h3 className="text-sm font-bold text-[#0D2B1A] mt-1 leading-snug">{job.title[lang]}</h3>
+                  <div key={job.id} className="bg-white rounded-2xl shadow-sm overflow-hidden"
+                    style={{ borderLeft: '4px solid #F97316' }}>
+                    <div className="p-4">
+                      {/* Top row: department + deadline */}
+                      <div className="flex items-start justify-between gap-2 mb-2.5">
+                        <span className="text-[10px] font-bold text-sky-600 bg-sky-50 border border-sky-200 px-2 py-1 rounded-full leading-none">
+                          🏛️ {job.department[lang]}
+                        </span>
+                        <span className="text-[10px] font-bold text-[#F97316] bg-orange-50 border border-orange-200 px-2 py-1 rounded-full shrink-0 leading-none">
+                          ⏰ {job.lastDate[lang]}
+                        </span>
+                      </div>
+
+                      {/* Title */}
+                      <h3 className="text-[14px] font-bold text-[#0D2B1A] leading-snug mb-3">
+                        {job.title[lang]}
+                      </h3>
+
+                      {/* Info pills */}
+                      <div className="flex flex-wrap gap-2 mb-3">
+                        <span className="flex items-center gap-1 text-[11px] font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-1.5 rounded-xl">
+                          👥 {job.vacancies[lang]}
+                        </span>
+                        <span className="flex items-center gap-1 text-[11px] font-semibold text-blue-700 bg-blue-50 border border-blue-200 px-2.5 py-1.5 rounded-xl">
+                          🎓 {job.eligibility[lang]}
+                        </span>
+                      </div>
+
+                      {/* Apply button */}
+                      <a href={job.link} target="_blank" rel="noopener noreferrer"
+                        className="active-press flex items-center justify-center gap-2 py-3 rounded-2xl text-white font-bold text-xs"
+                        style={{ background:'linear-gradient(135deg,#F97316,#EA6C0A)', boxShadow:'0 4px 12px rgba(249,115,22,0.25)' }}
+                        onClick={(e) => {
+                          if(job.link.includes('hssc.gov.in')||job.link.includes('hpsc.gov.in')){
+                            e.preventDefault();
+                            alert(`Redirecting to ${job.link}...`);
+                          }
+                        }}>
+                        <ExternalLink size={13} strokeWidth={2} />
+                        {t.jobApplyBtn}
+                      </a>
                     </div>
-                    <div className="grid grid-cols-2 gap-3 bg-[#F2F9F5] border border-green-100 rounded-xl p-3 text-xs">
-                      <div>
-                        <span className="block text-[10px] text-gray-400 uppercase font-bold tracking-wider mb-0.5">👥 {t.jobVacancies}</span>
-                        <span className="text-[#0D2B1A] font-bold">{job.vacancies[lang]}</span>
-                      </div>
-                      <div>
-                        <span className="block text-[10px] text-gray-400 uppercase font-bold tracking-wider mb-0.5">🎓 {t.jobEligibility}</span>
-                        <span className="text-[#0D2B1A] font-bold">{job.eligibility[lang]}</span>
-                      </div>
-                      <div className="col-span-2 border-t border-gray-200 pt-2">
-                        <span className="block text-[10px] text-gray-400 uppercase font-bold tracking-wider mb-0.5">📅 {t.jobLastDate}</span>
-                        <span className="text-[#F97316] font-bold">{job.lastDate[lang]}</span>
-                      </div>
-                    </div>
-                    <a href={job.link} target="_blank" rel="noopener noreferrer"
-                      className="text-white font-bold text-xs text-center py-3 rounded-2xl block active-press"
-                      style={{ background:'linear-gradient(135deg,#F97316,#EA6C0A)' }}
-                      onClick={(e) => {
-                        if(job.link.includes('hssc.gov.in')||job.link.includes('hpsc.gov.in')){
-                          e.preventDefault();
-                          alert(`Redirecting to ${job.link}...`);
-                        }
-                      }}>
-                      🔗 {t.jobApplyBtn}
-                    </a>
                   </div>
                 ))}
               </div>

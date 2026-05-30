@@ -416,6 +416,12 @@ export const db = {
     this.saveAnnouncements(updated);
   },
 
+  updateAnnouncement(id, updatedFields) {
+    const list = this.getAnnouncements();
+    const index = list.findIndex((item) => item.id === id);
+    if (index !== -1) { list[index] = { ...list[index], ...updatedFields }; this.saveAnnouncements(list); }
+  },
+
 
   // --- NEWS FEED ---
   getNews() {
@@ -490,6 +496,12 @@ export const db = {
     this.saveSchemes(updated);
   },
 
+  updateScheme(id, updatedFields) {
+    const list = this.getSchemes();
+    const index = list.findIndex((item) => item.id === id);
+    if (index !== -1) { list[index] = { ...list[index], ...updatedFields }; this.saveSchemes(list); }
+  },
+
 
   // --- LEADERS ---
   getLeaders() {
@@ -523,6 +535,12 @@ export const db = {
     this.saveLeaders(updated);
   },
 
+  updateLeader(id, updatedFields) {
+    const list = this.getLeaders();
+    const index = list.findIndex((item) => item.id === id);
+    if (index !== -1) { list[index] = { ...list[index], ...updatedFields }; this.saveLeaders(list); }
+  },
+
 
   // --- SCHOOLS (EDUCATION) ---
   getSchools() {
@@ -553,6 +571,12 @@ export const db = {
     const list = this.getSchools();
     const updated = list.filter((item) => item.id !== id);
     this.saveSchools(updated);
+  },
+
+  updateSchool(id, updatedFields) {
+    const list = this.getSchools();
+    const index = list.findIndex((item) => item.id === id);
+    if (index !== -1) { list[index] = { ...list[index], ...updatedFields }; this.saveSchools(list); }
   },
 
   // --- JOBS ---
@@ -658,6 +682,12 @@ export const db = {
     const list = this.getJobs();
     const updated = list.filter((item) => item.id !== id);
     this.saveJobs(updated);
+  },
+
+  updateJob(id, updatedFields) {
+    const list = this.getJobs();
+    const index = list.findIndex((item) => item.id === id);
+    if (index !== -1) { list[index] = { ...list[index], ...updatedFields }; this.saveJobs(list); }
   },
 
   // --- SUPER ADMIN SESSION MANAGERS ---

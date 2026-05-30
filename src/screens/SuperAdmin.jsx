@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import { db } from '../data/db';
 import { translations } from '../data/translations';
 import {
-  ShieldCheck, LogOut, Trash2, Plus, Pencil, Upload, ImagePlus,
+  ShieldCheck, LogOut, Trash2, Plus, Pencil, Upload, ImagePlus, Save,
   Megaphone, MessageSquare, Award, Users, Wrench, GraduationCap, X, Check, Briefcase,
   BadgeCheck, FileText, Calendar, User
 } from 'lucide-react';
@@ -54,6 +54,52 @@ export default function SuperAdmin({ lang, onLogout }) {
 
   const addNewsImgRef  = useRef(null);
   const editNewsImgRef = useRef(null);
+
+  const [isEditing, setIsEditing] = useState(false);
+  const [editingItem, setEditingItem] = useState(null);
+
+  const closeAddModal = () => {
+    setShowAddModal(false);
+    setIsEditing(false);
+    setEditingItem(null);
+    setFormFields({});
+  };
+
+  const openEdit = (item) => {
+    setEditingItem(item);
+    setIsEditing(true);
+    const f = {};
+    if (activeTab === 'announcements') {
+      Object.assign(f, { titleEn: item.title.en, titleHi: item.title.hi, descEn: item.desc.en, descHi: item.desc.hi, badgeEn: item.badge.en, badgeHi: item.badge.hi });
+    } else if (activeTab === 'schemes') {
+      Object.assign(f, { nameEn: item.name.en, nameHi: item.name.hi, deptEn: item.department.en, deptHi: item.department.hi, category: item.category, benefitsEn: item.benefits.en, benefitsHi: item.benefits.hi, eligibilityEn: item.eligibility.en, eligibilityHi: item.eligibility.hi });
+    } else if (activeTab === 'leaders') {
+      Object.assign(f, { nameEn: item.name.en, nameHi: item.name.hi, roleEn: item.role.en, roleHi: item.role.hi, phone: item.phone, whatsapp: item.whatsapp, wardEn: item.ward.en, wardHi: item.ward.hi, image: item.image });
+    } else if (activeTab === 'schools') {
+      Object.assign(f, { nameEn: item.name.en, nameHi: item.name.hi, principalEn: item.principal.en, principalHi: item.principal.hi, phone: item.phone, hoursEn: item.hours.en, hoursHi: item.hours.hi, announceEn: item.announcement.en, announceHi: item.announcement.hi, locEn: item.location.en, locHi: item.location.hi, type: item.type });
+    } else if (activeTab === 'jobs') {
+      Object.assign(f, { titleEn: item.title.en, titleHi: item.title.hi, deptEn: item.department.en, deptHi: item.department.hi, vacEn: item.vacancies.en, vacHi: item.vacancies.hi, eligEn: item.eligibility.en, eligHi: item.eligibility.hi, lastDateEn: item.lastDate.en, lastDateHi: item.lastDate.hi, link: item.link });
+    }
+    setFormFields(f);
+    setShowAddModal(true);
+  };
+
+  const handleEditSubmit = (e) => {
+    e.preventDefault();
+    if (activeTab === 'announcements') {
+      db.updateAnnouncement(editingItem.id, { title: { en: formFields.titleEn, hi: formFields.titleHi }, desc: { en: formFields.descEn, hi: formFields.descHi }, badge: { en: formFields.badgeEn?.toUpperCase(), hi: formFields.badgeHi } });
+    } else if (activeTab === 'schemes') {
+      db.updateScheme(editingItem.id, { name: { en: formFields.nameEn, hi: formFields.nameHi }, department: { en: formFields.deptEn, hi: formFields.deptHi }, category: formFields.category, benefits: { en: formFields.benefitsEn, hi: formFields.benefitsHi }, eligibility: { en: formFields.eligibilityEn, hi: formFields.eligibilityHi } });
+    } else if (activeTab === 'leaders') {
+      db.updateLeader(editingItem.id, { name: { en: formFields.nameEn, hi: formFields.nameHi }, role: { en: formFields.roleEn, hi: formFields.roleHi }, phone: formFields.phone, whatsapp: formFields.whatsapp, ward: { en: formFields.wardEn, hi: formFields.wardHi }, image: formFields.image });
+    } else if (activeTab === 'schools') {
+      db.updateSchool(editingItem.id, { name: { en: formFields.nameEn, hi: formFields.nameHi }, principal: { en: formFields.principalEn, hi: formFields.principalHi }, phone: formFields.phone, hours: { en: formFields.hoursEn, hi: formFields.hoursHi }, announcement: { en: formFields.announceEn, hi: formFields.announceHi }, location: { en: formFields.locEn, hi: formFields.locHi }, type: formFields.type });
+    } else if (activeTab === 'jobs') {
+      db.updateJob(editingItem.id, { title: { en: formFields.titleEn, hi: formFields.titleHi }, department: { en: formFields.deptEn, hi: formFields.deptHi }, vacancies: { en: formFields.vacEn, hi: formFields.vacHi }, eligibility: { en: formFields.eligEn, hi: formFields.eligHi }, lastDate: { en: formFields.lastDateEn, hi: formFields.lastDateHi }, link: formFields.link });
+    }
+    refreshAllData();
+    closeAddModal();
+  };
 
   const [showEditNewsModal, setShowEditNewsModal] = useState(false);
   const [editingNews, setEditingNews] = useState(null);
@@ -186,12 +232,31 @@ export default function SuperAdmin({ lang, onLogout }) {
     }
 
     refreshAllData();
-    setShowAddModal(false);
-    setFormFields({});
+    closeAddModal();
   };
 
   const inputCls = "form-input w-full text-sm";
   const labelCls = "form-label block mb-1.5";
+
+  /* Shared Edit/Delete action bar for cards */
+  const CardActions = ({ onEdit, onDelete }) => (
+    <div className="flex gap-2 pt-3 border-t border-[#F0E8DC]">
+      <button
+        onClick={onEdit}
+        className="active-press flex-1 flex items-center justify-center gap-1.5 py-2 rounded-full bg-[#F2F9F5] border border-[#D4EBD9] text-[#0F3D27] text-xs font-bold transition-colors hover:bg-[#D4EBD9]"
+      >
+        <Pencil size={12} strokeWidth={2} />
+        {lang === 'en' ? 'Edit' : 'संपादित करें'}
+      </button>
+      <button
+        onClick={onDelete}
+        className="active-press flex-1 flex items-center justify-center gap-1.5 py-2 rounded-full bg-red-50 border border-red-100 text-red-500 text-xs font-bold transition-colors hover:bg-red-100"
+      >
+        <Trash2 size={12} strokeWidth={1.5} />
+        {lang === 'en' ? 'Delete' : 'हटाएं'}
+      </button>
+    </div>
+  );
 
   return (
     <div className="flex-1 overflow-hidden flex flex-col bg-[#FAF7F2]">
@@ -263,7 +328,7 @@ export default function SuperAdmin({ lang, onLogout }) {
         </span>
         {activeTab !== 'providers' && activeTab !== 'kyc' && (
           <button
-            onClick={() => { setFormFields({}); setShowAddModal(true); }}
+            onClick={() => { setFormFields({}); setIsEditing(false); setEditingItem(null); setShowAddModal(true); }}
             className="active-press flex items-center gap-1 px-3 py-1.5 bg-forest-teal-700 hover:bg-forest-teal-600 text-white font-bold text-[10px] rounded-full tracking-wider transition-colors shadow-sm"
           >
             <Plus size={11} strokeWidth={2} />
@@ -277,20 +342,15 @@ export default function SuperAdmin({ lang, onLogout }) {
 
         {/* A. ANNOUNCEMENTS */}
         {activeTab === 'announcements' && announcements.map((item) => (
-          <div key={item.id} className="bg-white border border-[#E8E0D4] rounded-2xl p-4 flex justify-between items-center gap-4 shadow-sm">
-            <div className="min-w-0">
+          <div key={item.id} className="bg-white border border-[#E8E0D4] rounded-2xl p-4 shadow-sm">
+            <div className="min-w-0 mb-3">
               <span className="text-[9px] font-bold text-amber-600 uppercase tracking-wider bg-amber-50 px-2 py-0.5 rounded-lg border border-amber-200">
                 {item.badge[lang]}
               </span>
-              <h4 className="text-sm font-bold text-[#2D1F0E] mt-1.5 truncate">{item.title[lang]}</h4>
-              <p className="text-xs text-[#8A7560] truncate mt-0.5">{item.desc[lang]}</p>
+              <h4 className="text-sm font-bold text-[#2D1F0E] mt-1.5">{item.title[lang]}</h4>
+              <p className="text-xs text-[#8A7560] mt-0.5 line-clamp-2">{item.desc[lang]}</p>
             </div>
-            <button
-              onClick={() => handleDelete(item.id, 'announcements')}
-              className="w-8 h-8 rounded-full bg-red-50 hover:bg-red-100 text-red-500 flex items-center justify-center shrink-0 border border-red-100 transition-colors"
-            >
-              <Trash2 size={14} strokeWidth={1.5} />
-            </button>
+            <CardActions onEdit={() => openEdit(item)} onDelete={() => handleDelete(item.id, 'announcements')} />
           </div>
         ))}
 
@@ -329,51 +389,33 @@ export default function SuperAdmin({ lang, onLogout }) {
                 <span className="text-[10px] text-[#8A7560] font-semibold truncate">{item.author[lang]}</span>
               </div>
               {/* Actions */}
-              <div className="flex gap-2 pt-3 border-t border-[#F0E8DC]">
-                <button
-                  onClick={() => openEditNews(item)}
-                  className="active-press flex-1 flex items-center justify-center gap-1.5 py-2 rounded-full bg-[#F2F9F5] border border-[#D4EBD9] text-[#0F3D27] text-xs font-bold transition-colors hover:bg-[#D4EBD9]"
-                >
-                  <Pencil size={12} strokeWidth={2} />
-                  {lang === 'en' ? 'Edit' : 'संपादित करें'}
-                </button>
-                <button
-                  onClick={() => handleDelete(item.id, 'news')}
-                  className="active-press flex-1 flex items-center justify-center gap-1.5 py-2 rounded-full bg-red-50 border border-red-100 text-red-500 text-xs font-bold transition-colors hover:bg-red-100"
-                >
-                  <Trash2 size={12} strokeWidth={1.5} />
-                  {lang === 'en' ? 'Delete' : 'हटाएं'}
-                </button>
-              </div>
+              <CardActions onEdit={() => openEditNews(item)} onDelete={() => handleDelete(item.id, 'news')} />
             </div>
           </div>
         ))}
 
         {/* C. SCHEMES */}
         {activeTab === 'schemes' && schemes.map((item) => (
-          <div key={item.id} className="bg-white border border-[#E8E0D4] rounded-2xl p-4 flex justify-between items-center gap-4 shadow-sm">
-            <div className="min-w-0">
+          <div key={item.id} className="bg-white border border-[#E8E0D4] rounded-2xl p-4 shadow-sm">
+            <div className="min-w-0 mb-3">
               <span className="text-[9px] font-bold text-emerald-600 uppercase tracking-wider bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-lg">
                 {item.category.toUpperCase()}
               </span>
-              <h4 className="text-sm font-bold text-[#2D1F0E] mt-1.5 truncate">{item.name[lang]}</h4>
-              <p className="text-xs text-[#8A7560] truncate mt-0.5">🏢 {item.department[lang]}</p>
+              <h4 className="text-sm font-bold text-[#2D1F0E] mt-1.5">{item.name[lang]}</h4>
+              <p className="text-xs text-[#8A7560] mt-0.5">🏢 {item.department[lang]}</p>
             </div>
-            <button
-              onClick={() => handleDelete(item.id, 'schemes')}
-              className="w-8 h-8 rounded-full bg-red-50 hover:bg-red-100 text-red-500 flex items-center justify-center shrink-0 border border-red-100 transition-colors"
-            >
-              <Trash2 size={14} strokeWidth={1.5} />
-            </button>
+            <CardActions onEdit={() => openEdit(item)} onDelete={() => handleDelete(item.id, 'schemes')} />
           </div>
         ))}
 
         {/* D. LEADERS */}
         {activeTab === 'leaders' && leaders.map((item) => (
-          <div key={item.id} className="bg-white border border-[#E8E0D4] rounded-2xl p-4 flex justify-between items-center gap-4 shadow-sm">
-            <div className="flex items-center gap-3 min-w-0">
-              <div className="w-10 h-10 rounded-full border border-[#E8E0D4] bg-[#F5ECD8] flex items-center justify-center text-lg shrink-0">
-                👤
+          <div key={item.id} className="bg-white border border-[#E8E0D4] rounded-2xl p-4 shadow-sm">
+            <div className="flex items-center gap-3 min-w-0 mb-3">
+              <div className="w-10 h-10 rounded-full border border-[#E8E0D4] bg-[#F5ECD8] flex items-center justify-center shrink-0 overflow-hidden">
+                {item.image
+                  ? <img src={item.image} alt="" className="w-full h-full object-cover" />
+                  : <span className="text-lg">👤</span>}
               </div>
               <div className="min-w-0">
                 <h4 className="text-sm font-bold text-[#2D1F0E] truncate">{item.name[lang]}</h4>
@@ -381,12 +423,7 @@ export default function SuperAdmin({ lang, onLogout }) {
                 <p className="text-xs text-[#8A7560] truncate mt-0.5">📞 {item.phone} • 📍 {item.ward[lang]}</p>
               </div>
             </div>
-            <button
-              onClick={() => handleDelete(item.id, 'leaders')}
-              className="w-8 h-8 rounded-full bg-red-50 hover:bg-red-100 text-red-500 flex items-center justify-center shrink-0 border border-red-100 transition-colors"
-            >
-              <Trash2 size={14} strokeWidth={1.5} />
-            </button>
+            <CardActions onEdit={() => openEdit(item)} onDelete={() => handleDelete(item.id, 'leaders')} />
           </div>
         ))}
 
@@ -452,39 +489,29 @@ export default function SuperAdmin({ lang, onLogout }) {
 
         {/* F. SCHOOLS */}
         {activeTab === 'schools' && schools.map((item) => (
-          <div key={item.id} className="bg-white border border-[#E8E0D4] rounded-2xl p-4 flex justify-between items-center gap-4 shadow-sm">
-            <div className="min-w-0">
+          <div key={item.id} className="bg-white border border-[#E8E0D4] rounded-2xl p-4 shadow-sm">
+            <div className="min-w-0 mb-3">
               <span className="text-[9px] font-bold text-sky-600 uppercase tracking-wider bg-sky-50 px-2 py-0.5 rounded-lg border border-sky-100">
                 {item.type.toUpperCase()}
               </span>
-              <h4 className="text-sm font-bold text-[#2D1F0E] mt-1.5 truncate">{item.name[lang]}</h4>
-              <p className="text-xs text-[#8A7560] truncate mt-0.5">👤 {item.principal[lang]}</p>
+              <h4 className="text-sm font-bold text-[#2D1F0E] mt-1.5">{item.name[lang]}</h4>
+              <p className="text-xs text-[#8A7560] mt-0.5">👤 {item.principal[lang]} • 📞 {item.phone}</p>
             </div>
-            <button
-              onClick={() => handleDelete(item.id, 'schools')}
-              className="w-8 h-8 rounded-full bg-red-50 hover:bg-red-100 text-red-500 flex items-center justify-center shrink-0 border border-red-100 transition-colors"
-            >
-              <Trash2 size={14} strokeWidth={1.5} />
-            </button>
+            <CardActions onEdit={() => openEdit(item)} onDelete={() => handleDelete(item.id, 'schools')} />
           </div>
         ))}
 
         {/* G. JOBS */}
         {activeTab === 'jobs' && jobs.map((item) => (
-          <div key={item.id} className="bg-white border border-[#E8E0D4] rounded-2xl p-4 flex justify-between items-center gap-4 shadow-sm">
-            <div className="min-w-0 flex-1">
+          <div key={item.id} className="bg-white border border-[#E8E0D4] rounded-2xl p-4 shadow-sm">
+            <div className="min-w-0 mb-3">
               <span className="text-[9px] font-bold text-emerald-600 uppercase tracking-wider bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-lg">
                 {item.department[lang]}
               </span>
-              <h4 className="text-sm font-bold text-[#2D1F0E] mt-1.5 truncate">{item.title[lang]}</h4>
-              <p className="text-xs text-[#8A7560] truncate mt-0.5">👥 {item.vacancies[lang]} | {item.eligibility[lang]}</p>
+              <h4 className="text-sm font-bold text-[#2D1F0E] mt-1.5">{item.title[lang]}</h4>
+              <p className="text-xs text-[#8A7560] mt-0.5">👥 {item.vacancies[lang]} • ⏰ {item.lastDate[lang]}</p>
             </div>
-            <button
-              onClick={() => handleDelete(item.id, 'jobs')}
-              className="w-8 h-8 rounded-full bg-red-50 hover:bg-red-100 text-red-500 flex items-center justify-center shrink-0 border border-red-100 transition-colors"
-            >
-              <Trash2 size={14} strokeWidth={1.5} />
-            </button>
+            <CardActions onEdit={() => openEdit(item)} onDelete={() => handleDelete(item.id, 'jobs')} />
           </div>
         ))}
 
@@ -584,36 +611,45 @@ export default function SuperAdmin({ lang, onLogout }) {
         </div>
       )}
 
-      {/* ADD FORM MODAL */}
+      {/* ADD / EDIT FORM MODAL */}
       {showAddModal && (
         <div className="absolute inset-0 bg-[#2D1F0E]/70 backdrop-blur-sm z-50 flex items-center justify-center p-5 overflow-y-auto">
           <div className="bg-white border border-[#E8E0D4] rounded-3xl w-full max-w-sm flex flex-col max-h-[92%] overflow-hidden shadow-2xl">
             {/* Modal header */}
             <div className="px-5 py-4 border-b border-slate-100 flex justify-between items-center select-none bg-[#FAF7F2] shrink-0 rounded-t-3xl">
-              <h3 className="text-sm font-bold text-[#2D1F0E] uppercase tracking-wider">
-                {lang === 'en' ? `Add ${activeTab}` : `नया ${activeTab} जोड़ें`}
-              </h3>
-              <button type="button" onClick={() => setShowAddModal(false)} className="text-slate-400 hover:text-slate-600 transition-colors">
+              <div className="flex items-center gap-2.5">
+                {isEditing && (
+                  <div className="w-7 h-7 rounded-full bg-[#1B5E3B]/10 border border-[#1B5E3B]/20 flex items-center justify-center">
+                    <Pencil size={12} strokeWidth={2} className="text-[#1B5E3B]" />
+                  </div>
+                )}
+                <h3 className="text-sm font-bold text-[#2D1F0E] uppercase tracking-wider">
+                  {isEditing
+                    ? (lang === 'en' ? `Edit ${activeTab}` : `${activeTab} संपादित करें`)
+                    : (lang === 'en' ? `Add ${activeTab}` : `नया ${activeTab} जोड़ें`)}
+                </h3>
+              </div>
+              <button type="button" onClick={closeAddModal} className="text-slate-400 hover:text-slate-600 transition-colors">
                 <X size={18} />
               </button>
             </div>
 
             {/* Modal form */}
-            <form onSubmit={handleAddSubmit} className="p-5 overflow-y-auto no-scrollbar flex-1 space-y-4">
+            <form onSubmit={isEditing ? handleEditSubmit : handleAddSubmit} className="p-5 overflow-y-auto no-scrollbar flex-1 space-y-4">
 
               {/* Announcement */}
               {activeTab === 'announcements' && (
                 <>
                   <div className="grid grid-cols-2 gap-3">
-                    <div className="space-y-1"><label className={labelCls}>Title (EN)</label><input type="text" required onChange={(e) => setFormFields({...formFields, titleEn: e.target.value})} className={inputCls} placeholder="e.g. Pipeline Repair" /></div>
-                    <div className="space-y-1"><label className={labelCls}>शीर्षक (HI)</label><input type="text" required onChange={(e) => setFormFields({...formFields, titleHi: e.target.value})} className={inputCls} placeholder="उदा. पाइपलाइन मरम्मत" /></div>
+                    <div className="space-y-1"><label className={labelCls}>Title (EN)</label><input type="text" required value={formFields.titleEn || ''} onChange={(e) => setFormFields({...formFields, titleEn: e.target.value})} className={inputCls} placeholder="e.g. Pipeline Repair" /></div>
+                    <div className="space-y-1"><label className={labelCls}>शीर्षक (HI)</label><input type="text" required value={formFields.titleHi || ''} onChange={(e) => setFormFields({...formFields, titleHi: e.target.value})} className={inputCls} placeholder="उदा. पाइपलाइन मरम्मत" /></div>
                   </div>
                   <div className="grid grid-cols-2 gap-3">
-                    <div className="space-y-1"><label className={labelCls}>Badge (EN)</label><input type="text" required onChange={(e) => setFormFields({...formFields, badgeEn: e.target.value})} className={inputCls} placeholder="e.g. WATER" /></div>
-                    <div className="space-y-1"><label className={labelCls}>टैग (HI)</label><input type="text" required onChange={(e) => setFormFields({...formFields, badgeHi: e.target.value})} className={inputCls} placeholder="उदा. जल आपूर्ति" /></div>
+                    <div className="space-y-1"><label className={labelCls}>Badge (EN)</label><input type="text" required value={formFields.badgeEn || ''} onChange={(e) => setFormFields({...formFields, badgeEn: e.target.value})} className={inputCls} placeholder="e.g. WATER" /></div>
+                    <div className="space-y-1"><label className={labelCls}>टैग (HI)</label><input type="text" required value={formFields.badgeHi || ''} onChange={(e) => setFormFields({...formFields, badgeHi: e.target.value})} className={inputCls} placeholder="उदा. जल आपूर्ति" /></div>
                   </div>
-                  <div className="space-y-1"><label className={labelCls}>Description (EN)</label><textarea required onChange={(e) => setFormFields({...formFields, descEn: e.target.value})} rows="2" className={inputCls} placeholder="Details..."></textarea></div>
-                  <div className="space-y-1"><label className={labelCls}>विवरण (HI)</label><textarea required onChange={(e) => setFormFields({...formFields, descHi: e.target.value})} rows="2" className={inputCls} placeholder="विवरण..."></textarea></div>
+                  <div className="space-y-1"><label className={labelCls}>Description (EN)</label><textarea required value={formFields.descEn || ''} onChange={(e) => setFormFields({...formFields, descEn: e.target.value})} rows="2" className={inputCls} placeholder="Details..."></textarea></div>
+                  <div className="space-y-1"><label className={labelCls}>विवरण (HI)</label><textarea required value={formFields.descHi || ''} onChange={(e) => setFormFields({...formFields, descHi: e.target.value})} rows="2" className={inputCls} placeholder="विवरण..."></textarea></div>
                 </>
               )}
 
@@ -621,16 +657,16 @@ export default function SuperAdmin({ lang, onLogout }) {
               {activeTab === 'news' && (
                 <>
                   <div className="grid grid-cols-2 gap-3">
-                    <div className="space-y-1"><label className={labelCls}>Title (EN)</label><input type="text" required onChange={(e) => setFormFields({...formFields, titleEn: e.target.value})} className={inputCls} /></div>
-                    <div className="space-y-1"><label className={labelCls}>शीर्षक (HI)</label><input type="text" required onChange={(e) => setFormFields({...formFields, titleHi: e.target.value})} className={inputCls} /></div>
+                    <div className="space-y-1"><label className={labelCls}>Title (EN)</label><input type="text" required value={formFields.titleEn || ''} onChange={(e) => setFormFields({...formFields, titleEn: e.target.value})} className={inputCls} /></div>
+                    <div className="space-y-1"><label className={labelCls}>शीर्षक (HI)</label><input type="text" required value={formFields.titleHi || ''} onChange={(e) => setFormFields({...formFields, titleHi: e.target.value})} className={inputCls} /></div>
                   </div>
                   <div className="grid grid-cols-2 gap-3">
-                    <div className="space-y-1"><label className={labelCls}>Category (EN)</label><input type="text" required onChange={(e) => setFormFields({...formFields, catEn: e.target.value})} className={inputCls} placeholder="Healthcare" /></div>
-                    <div className="space-y-1"><label className={labelCls}>श्रेणी (HI)</label><input type="text" required onChange={(e) => setFormFields({...formFields, catHi: e.target.value})} className={inputCls} placeholder="स्वास्थ्य" /></div>
+                    <div className="space-y-1"><label className={labelCls}>Category (EN)</label><input type="text" required value={formFields.catEn || ''} onChange={(e) => setFormFields({...formFields, catEn: e.target.value})} className={inputCls} placeholder="Healthcare" /></div>
+                    <div className="space-y-1"><label className={labelCls}>श्रेणी (HI)</label><input type="text" required value={formFields.catHi || ''} onChange={(e) => setFormFields({...formFields, catHi: e.target.value})} className={inputCls} placeholder="स्वास्थ्य" /></div>
                   </div>
                   <div className="grid grid-cols-2 gap-3">
-                    <div className="space-y-1"><label className={labelCls}>Author (EN)</label><input type="text" required onChange={(e) => setFormFields({...formFields, authorEn: e.target.value})} className={inputCls} /></div>
-                    <div className="space-y-1"><label className={labelCls}>लेखक (HI)</label><input type="text" required onChange={(e) => setFormFields({...formFields, authorHi: e.target.value})} className={inputCls} /></div>
+                    <div className="space-y-1"><label className={labelCls}>Author (EN)</label><input type="text" required value={formFields.authorEn || ''} onChange={(e) => setFormFields({...formFields, authorEn: e.target.value})} className={inputCls} /></div>
+                    <div className="space-y-1"><label className={labelCls}>लेखक (HI)</label><input type="text" required value={formFields.authorHi || ''} onChange={(e) => setFormFields({...formFields, authorHi: e.target.value})} className={inputCls} /></div>
                   </div>
                   {/* Image upload */}
                   <div className="space-y-1">
@@ -659,8 +695,8 @@ export default function SuperAdmin({ lang, onLogout }) {
                     <input ref={addNewsImgRef} type="file" accept="image/*" className="hidden"
                       onChange={e => { const f = e.target.files[0]; if (f) compressImage(f, url => setFormFields({...formFields, image: url})); e.target.value = ''; }} />
                   </div>
-                  <div className="space-y-1"><label className={labelCls}>Description (EN)</label><textarea required onChange={(e) => setFormFields({...formFields, descEn: e.target.value})} rows="2" className={inputCls}></textarea></div>
-                  <div className="space-y-1"><label className={labelCls}>विवरण (HI)</label><textarea required onChange={(e) => setFormFields({...formFields, descHi: e.target.value})} rows="2" className={inputCls}></textarea></div>
+                  <div className="space-y-1"><label className={labelCls}>Description (EN)</label><textarea required value={formFields.descEn || ''} onChange={(e) => setFormFields({...formFields, descEn: e.target.value})} rows="2" className={inputCls}></textarea></div>
+                  <div className="space-y-1"><label className={labelCls}>विवरण (HI)</label><textarea required value={formFields.descHi || ''} onChange={(e) => setFormFields({...formFields, descHi: e.target.value})} rows="2" className={inputCls}></textarea></div>
                 </>
               )}
 
@@ -668,26 +704,26 @@ export default function SuperAdmin({ lang, onLogout }) {
               {activeTab === 'schemes' && (
                 <>
                   <div className="grid grid-cols-2 gap-3">
-                    <div className="space-y-1"><label className={labelCls}>Scheme Name (EN)</label><input type="text" required onChange={(e) => setFormFields({...formFields, nameEn: e.target.value})} className={inputCls} /></div>
-                    <div className="space-y-1"><label className={labelCls}>योजना का नाम (HI)</label><input type="text" required onChange={(e) => setFormFields({...formFields, nameHi: e.target.value})} className={inputCls} /></div>
+                    <div className="space-y-1"><label className={labelCls}>Scheme Name (EN)</label><input type="text" required value={formFields.nameEn || ''} onChange={(e) => setFormFields({...formFields, nameEn: e.target.value})} className={inputCls} /></div>
+                    <div className="space-y-1"><label className={labelCls}>योजना का नाम (HI)</label><input type="text" required value={formFields.nameHi || ''} onChange={(e) => setFormFields({...formFields, nameHi: e.target.value})} className={inputCls} /></div>
                   </div>
                   <div className="grid grid-cols-2 gap-3">
-                    <div className="space-y-1"><label className={labelCls}>Department (EN)</label><input type="text" required onChange={(e) => setFormFields({...formFields, deptEn: e.target.value})} className={inputCls} /></div>
-                    <div className="space-y-1"><label className={labelCls}>विभाग (HI)</label><input type="text" required onChange={(e) => setFormFields({...formFields, deptHi: e.target.value})} className={inputCls} /></div>
+                    <div className="space-y-1"><label className={labelCls}>Department (EN)</label><input type="text" required value={formFields.deptEn || ''} onChange={(e) => setFormFields({...formFields, deptEn: e.target.value})} className={inputCls} /></div>
+                    <div className="space-y-1"><label className={labelCls}>विभाग (HI)</label><input type="text" required value={formFields.deptHi || ''} onChange={(e) => setFormFields({...formFields, deptHi: e.target.value})} className={inputCls} /></div>
                   </div>
                   <div className="space-y-1">
                     <label className={labelCls}>Scheme Category</label>
-                    <select onChange={(e) => setFormFields({...formFields, category: e.target.value})} className={inputCls}>
+                    <select value={formFields.category || 'agriculture'} onChange={(e) => setFormFields({...formFields, category: e.target.value})} className={inputCls}>
                       <option value="agriculture">Agriculture / खेती</option>
                       <option value="housing">Housing / आवास</option>
                       <option value="healthcare">Healthcare / स्वास्थ्य</option>
                       <option value="education">Education / शिक्षा</option>
                     </select>
                   </div>
-                  <div className="space-y-1"><label className={labelCls}>Benefits (EN)</label><textarea required onChange={(e) => setFormFields({...formFields, benefitsEn: e.target.value})} rows="2" className={inputCls}></textarea></div>
-                  <div className="space-y-1"><label className={labelCls}>लाभ (HI)</label><textarea required onChange={(e) => setFormFields({...formFields, benefitsHi: e.target.value})} rows="2" className={inputCls}></textarea></div>
-                  <div className="space-y-1"><label className={labelCls}>Eligibility (EN)</label><textarea required onChange={(e) => setFormFields({...formFields, eligibilityEn: e.target.value})} rows="2" className={inputCls}></textarea></div>
-                  <div className="space-y-1"><label className={labelCls}>पात्रता (HI)</label><textarea required onChange={(e) => setFormFields({...formFields, eligibilityHi: e.target.value})} rows="2" className={inputCls}></textarea></div>
+                  <div className="space-y-1"><label className={labelCls}>Benefits (EN)</label><textarea required value={formFields.benefitsEn || ''} onChange={(e) => setFormFields({...formFields, benefitsEn: e.target.value})} rows="2" className={inputCls}></textarea></div>
+                  <div className="space-y-1"><label className={labelCls}>लाभ (HI)</label><textarea required value={formFields.benefitsHi || ''} onChange={(e) => setFormFields({...formFields, benefitsHi: e.target.value})} rows="2" className={inputCls}></textarea></div>
+                  <div className="space-y-1"><label className={labelCls}>Eligibility (EN)</label><textarea required value={formFields.eligibilityEn || ''} onChange={(e) => setFormFields({...formFields, eligibilityEn: e.target.value})} rows="2" className={inputCls}></textarea></div>
+                  <div className="space-y-1"><label className={labelCls}>पात्रता (HI)</label><textarea required value={formFields.eligibilityHi || ''} onChange={(e) => setFormFields({...formFields, eligibilityHi: e.target.value})} rows="2" className={inputCls}></textarea></div>
                 </>
               )}
 
@@ -695,22 +731,22 @@ export default function SuperAdmin({ lang, onLogout }) {
               {activeTab === 'leaders' && (
                 <>
                   <div className="grid grid-cols-2 gap-3">
-                    <div className="space-y-1"><label className={labelCls}>Name (EN)</label><input type="text" required onChange={(e) => setFormFields({...formFields, nameEn: e.target.value})} className={inputCls} /></div>
-                    <div className="space-y-1"><label className={labelCls}>नाम (HI)</label><input type="text" required onChange={(e) => setFormFields({...formFields, nameHi: e.target.value})} className={inputCls} /></div>
+                    <div className="space-y-1"><label className={labelCls}>Name (EN)</label><input type="text" required value={formFields.nameEn || ''} onChange={(e) => setFormFields({...formFields, nameEn: e.target.value})} className={inputCls} /></div>
+                    <div className="space-y-1"><label className={labelCls}>नाम (HI)</label><input type="text" required value={formFields.nameHi || ''} onChange={(e) => setFormFields({...formFields, nameHi: e.target.value})} className={inputCls} /></div>
                   </div>
                   <div className="grid grid-cols-2 gap-3">
-                    <div className="space-y-1"><label className={labelCls}>Role (EN)</label><input type="text" required onChange={(e) => setFormFields({...formFields, roleEn: e.target.value})} className={inputCls} placeholder="Ward Member" /></div>
-                    <div className="space-y-1"><label className={labelCls}>पद (HI)</label><input type="text" required onChange={(e) => setFormFields({...formFields, roleHi: e.target.value})} className={inputCls} placeholder="वार्ड सदस्य" /></div>
+                    <div className="space-y-1"><label className={labelCls}>Role (EN)</label><input type="text" required value={formFields.roleEn || ''} onChange={(e) => setFormFields({...formFields, roleEn: e.target.value})} className={inputCls} placeholder="Ward Member" /></div>
+                    <div className="space-y-1"><label className={labelCls}>पद (HI)</label><input type="text" required value={formFields.roleHi || ''} onChange={(e) => setFormFields({...formFields, roleHi: e.target.value})} className={inputCls} placeholder="वार्ड सदस्य" /></div>
                   </div>
                   <div className="grid grid-cols-2 gap-3">
-                    <div className="space-y-1"><label className={labelCls}>Phone</label><input type="tel" required onChange={(e) => setFormFields({...formFields, phone: e.target.value})} className={inputCls} placeholder="+9198765..." /></div>
-                    <div className="space-y-1"><label className={labelCls}>WhatsApp</label><input type="text" required onChange={(e) => setFormFields({...formFields, whatsapp: e.target.value})} className={inputCls} placeholder="9198765..." /></div>
+                    <div className="space-y-1"><label className={labelCls}>Phone</label><input type="tel" required value={formFields.phone || ''} onChange={(e) => setFormFields({...formFields, phone: e.target.value})} className={inputCls} placeholder="+9198765..." /></div>
+                    <div className="space-y-1"><label className={labelCls}>WhatsApp</label><input type="text" required value={formFields.whatsapp || ''} onChange={(e) => setFormFields({...formFields, whatsapp: e.target.value})} className={inputCls} placeholder="9198765..." /></div>
                   </div>
                   <div className="grid grid-cols-2 gap-3">
-                    <div className="space-y-1"><label className={labelCls}>Ward (EN)</label><input type="text" required onChange={(e) => setFormFields({...formFields, wardEn: e.target.value})} className={inputCls} placeholder="Ward No. 4" /></div>
-                    <div className="space-y-1"><label className={labelCls}>वार्ड (HI)</label><input type="text" required onChange={(e) => setFormFields({...formFields, wardHi: e.target.value})} className={inputCls} placeholder="वार्ड संख्या 4" /></div>
+                    <div className="space-y-1"><label className={labelCls}>Ward (EN)</label><input type="text" required value={formFields.wardEn || ''} onChange={(e) => setFormFields({...formFields, wardEn: e.target.value})} className={inputCls} placeholder="Ward No. 4" /></div>
+                    <div className="space-y-1"><label className={labelCls}>वार्ड (HI)</label><input type="text" required value={formFields.wardHi || ''} onChange={(e) => setFormFields({...formFields, wardHi: e.target.value})} className={inputCls} placeholder="वार्ड संख्या 4" /></div>
                   </div>
-                  <div className="space-y-1"><label className={labelCls}>Photo URL</label><input type="text" onChange={(e) => setFormFields({...formFields, image: e.target.value})} className={inputCls} placeholder="https://..." /></div>
+                  <div className="space-y-1"><label className={labelCls}>Photo URL</label><input type="text" value={formFields.image || ''} onChange={(e) => setFormFields({...formFields, image: e.target.value})} className={inputCls} placeholder="https://..." /></div>
                 </>
               )}
 
@@ -718,36 +754,36 @@ export default function SuperAdmin({ lang, onLogout }) {
               {activeTab === 'schools' && (
                 <>
                   <div className="grid grid-cols-2 gap-3">
-                    <div className="space-y-1"><label className={labelCls}>School Name (EN)</label><input type="text" required onChange={(e) => setFormFields({...formFields, nameEn: e.target.value})} className={inputCls} /></div>
-                    <div className="space-y-1"><label className={labelCls}>स्कूल का नाम (HI)</label><input type="text" required onChange={(e) => setFormFields({...formFields, nameHi: e.target.value})} className={inputCls} /></div>
+                    <div className="space-y-1"><label className={labelCls}>School Name (EN)</label><input type="text" required value={formFields.nameEn || ''} onChange={(e) => setFormFields({...formFields, nameEn: e.target.value})} className={inputCls} /></div>
+                    <div className="space-y-1"><label className={labelCls}>स्कूल का नाम (HI)</label><input type="text" required value={formFields.nameHi || ''} onChange={(e) => setFormFields({...formFields, nameHi: e.target.value})} className={inputCls} /></div>
                   </div>
                   <div className="grid grid-cols-2 gap-3">
-                    <div className="space-y-1"><label className={labelCls}>Principal (EN)</label><input type="text" required onChange={(e) => setFormFields({...formFields, principalEn: e.target.value})} className={inputCls} /></div>
-                    <div className="space-y-1"><label className={labelCls}>प्राचार्य (HI)</label><input type="text" required onChange={(e) => setFormFields({...formFields, principalHi: e.target.value})} className={inputCls} /></div>
+                    <div className="space-y-1"><label className={labelCls}>Principal (EN)</label><input type="text" required value={formFields.principalEn || ''} onChange={(e) => setFormFields({...formFields, principalEn: e.target.value})} className={inputCls} /></div>
+                    <div className="space-y-1"><label className={labelCls}>प्राचार्य (HI)</label><input type="text" required value={formFields.principalHi || ''} onChange={(e) => setFormFields({...formFields, principalHi: e.target.value})} className={inputCls} /></div>
                   </div>
                   <div className="grid grid-cols-2 gap-3">
-                    <div className="space-y-1"><label className={labelCls}>Hours (EN)</label><input type="text" required onChange={(e) => setFormFields({...formFields, hoursEn: e.target.value})} className={inputCls} placeholder="9 AM - 3 PM" /></div>
-                    <div className="space-y-1"><label className={labelCls}>समय (HI)</label><input type="text" required onChange={(e) => setFormFields({...formFields, hoursHi: e.target.value})} className={inputCls} placeholder="9 AM - 3 PM" /></div>
+                    <div className="space-y-1"><label className={labelCls}>Hours (EN)</label><input type="text" required value={formFields.hoursEn || ''} onChange={(e) => setFormFields({...formFields, hoursEn: e.target.value})} className={inputCls} placeholder="9 AM - 3 PM" /></div>
+                    <div className="space-y-1"><label className={labelCls}>समय (HI)</label><input type="text" required value={formFields.hoursHi || ''} onChange={(e) => setFormFields({...formFields, hoursHi: e.target.value})} className={inputCls} placeholder="9 AM - 3 PM" /></div>
                   </div>
                   <div className="grid grid-cols-2 gap-3">
-                    <div className="space-y-1"><label className={labelCls}>Location (EN)</label><input type="text" required onChange={(e) => setFormFields({...formFields, locEn: e.target.value})} className={inputCls} /></div>
-                    <div className="space-y-1"><label className={labelCls}>स्थान (HI)</label><input type="text" required onChange={(e) => setFormFields({...formFields, locHi: e.target.value})} className={inputCls} /></div>
+                    <div className="space-y-1"><label className={labelCls}>Location (EN)</label><input type="text" required value={formFields.locEn || ''} onChange={(e) => setFormFields({...formFields, locEn: e.target.value})} className={inputCls} /></div>
+                    <div className="space-y-1"><label className={labelCls}>स्थान (HI)</label><input type="text" required value={formFields.locHi || ''} onChange={(e) => setFormFields({...formFields, locHi: e.target.value})} className={inputCls} /></div>
                   </div>
                   <div className="grid grid-cols-2 gap-3">
                     <div className="space-y-1">
                       <label className={labelCls}>School Type</label>
-                      <select onChange={(e) => setFormFields({...formFields, type: e.target.value})} className={inputCls}>
+                      <select value={formFields.type || 'primary'} onChange={(e) => setFormFields({...formFields, type: e.target.value})} className={inputCls}>
                         <option value="anganwadi">Anganwadi</option>
                         <option value="primary">Primary</option>
                         <option value="high">High School</option>
                         <option value="library">Library</option>
                       </select>
                     </div>
-                    <div className="space-y-1"><label className={labelCls}>Phone</label><input type="tel" required onChange={(e) => setFormFields({...formFields, phone: e.target.value})} className={inputCls} /></div>
+                    <div className="space-y-1"><label className={labelCls}>Phone</label><input type="tel" required value={formFields.phone || ''} onChange={(e) => setFormFields({...formFields, phone: e.target.value})} className={inputCls} /></div>
                   </div>
                   <div className="grid grid-cols-2 gap-3">
-                    <div className="space-y-1"><label className={labelCls}>Alert (EN)</label><input type="text" required onChange={(e) => setFormFields({...formFields, announceEn: e.target.value})} className={inputCls} placeholder="Free uniform..." /></div>
-                    <div className="space-y-1"><label className={labelCls}>अनाउंसमेंट (HI)</label><input type="text" required onChange={(e) => setFormFields({...formFields, announceHi: e.target.value})} className={inputCls} placeholder="निशुल्क ड्रेस..." /></div>
+                    <div className="space-y-1"><label className={labelCls}>Alert (EN)</label><input type="text" required value={formFields.announceEn || ''} onChange={(e) => setFormFields({...formFields, announceEn: e.target.value})} className={inputCls} placeholder="Free uniform..." /></div>
+                    <div className="space-y-1"><label className={labelCls}>अनाउंसमेंट (HI)</label><input type="text" required value={formFields.announceHi || ''} onChange={(e) => setFormFields({...formFields, announceHi: e.target.value})} className={inputCls} placeholder="निशुल्क ड्रेस..." /></div>
                   </div>
                 </>
               )}
@@ -756,26 +792,26 @@ export default function SuperAdmin({ lang, onLogout }) {
               {activeTab === 'jobs' && (
                 <>
                   <div className="grid grid-cols-2 gap-3">
-                    <div className="space-y-1"><label className={labelCls}>Job Title (EN)</label><input type="text" required onChange={(e) => setFormFields({...formFields, titleEn: e.target.value})} className={inputCls} placeholder="Constable Recruitment" /></div>
-                    <div className="space-y-1"><label className={labelCls}>नौकरी शीर्षक (HI)</label><input type="text" required onChange={(e) => setFormFields({...formFields, titleHi: e.target.value})} className={inputCls} placeholder="कांस्टेबल भर्ती" /></div>
+                    <div className="space-y-1"><label className={labelCls}>Job Title (EN)</label><input type="text" required value={formFields.titleEn || ''} onChange={(e) => setFormFields({...formFields, titleEn: e.target.value})} className={inputCls} placeholder="Constable Recruitment" /></div>
+                    <div className="space-y-1"><label className={labelCls}>नौकरी शीर्षक (HI)</label><input type="text" required value={formFields.titleHi || ''} onChange={(e) => setFormFields({...formFields, titleHi: e.target.value})} className={inputCls} placeholder="कांस्टेबल भर्ती" /></div>
                   </div>
                   <div className="grid grid-cols-2 gap-3">
-                    <div className="space-y-1"><label className={labelCls}>Department (EN)</label><input type="text" required onChange={(e) => setFormFields({...formFields, deptEn: e.target.value})} className={inputCls} placeholder="Haryana Police" /></div>
-                    <div className="space-y-1"><label className={labelCls}>विभाग (HI)</label><input type="text" required onChange={(e) => setFormFields({...formFields, deptHi: e.target.value})} className={inputCls} placeholder="हरियाणा पुलिस" /></div>
+                    <div className="space-y-1"><label className={labelCls}>Department (EN)</label><input type="text" required value={formFields.deptEn || ''} onChange={(e) => setFormFields({...formFields, deptEn: e.target.value})} className={inputCls} placeholder="Haryana Police" /></div>
+                    <div className="space-y-1"><label className={labelCls}>विभाग (HI)</label><input type="text" required value={formFields.deptHi || ''} onChange={(e) => setFormFields({...formFields, deptHi: e.target.value})} className={inputCls} placeholder="हरियाणा पुलिस" /></div>
                   </div>
                   <div className="grid grid-cols-2 gap-3">
-                    <div className="space-y-1"><label className={labelCls}>Vacancies (EN)</label><input type="text" required onChange={(e) => setFormFields({...formFields, vacEn: e.target.value})} className={inputCls} placeholder="5,000 Posts" /></div>
-                    <div className="space-y-1"><label className={labelCls}>रिक्तियां (HI)</label><input type="text" required onChange={(e) => setFormFields({...formFields, vacHi: e.target.value})} className={inputCls} placeholder="5,000 पद" /></div>
+                    <div className="space-y-1"><label className={labelCls}>Vacancies (EN)</label><input type="text" required value={formFields.vacEn || ''} onChange={(e) => setFormFields({...formFields, vacEn: e.target.value})} className={inputCls} placeholder="5,000 Posts" /></div>
+                    <div className="space-y-1"><label className={labelCls}>रिक्तियां (HI)</label><input type="text" required value={formFields.vacHi || ''} onChange={(e) => setFormFields({...formFields, vacHi: e.target.value})} className={inputCls} placeholder="5,000 पद" /></div>
                   </div>
                   <div className="grid grid-cols-2 gap-3">
-                    <div className="space-y-1"><label className={labelCls}>Eligibility (EN)</label><input type="text" required onChange={(e) => setFormFields({...formFields, eligEn: e.target.value})} className={inputCls} placeholder="12th Pass" /></div>
-                    <div className="space-y-1"><label className={labelCls}>पात्रता (HI)</label><input type="text" required onChange={(e) => setFormFields({...formFields, eligHi: e.target.value})} className={inputCls} placeholder="12वीं पास" /></div>
+                    <div className="space-y-1"><label className={labelCls}>Eligibility (EN)</label><input type="text" required value={formFields.eligEn || ''} onChange={(e) => setFormFields({...formFields, eligEn: e.target.value})} className={inputCls} placeholder="12th Pass" /></div>
+                    <div className="space-y-1"><label className={labelCls}>पात्रता (HI)</label><input type="text" required value={formFields.eligHi || ''} onChange={(e) => setFormFields({...formFields, eligHi: e.target.value})} className={inputCls} placeholder="12वीं पास" /></div>
                   </div>
                   <div className="grid grid-cols-2 gap-3">
-                    <div className="space-y-1"><label className={labelCls}>Last Date (EN)</label><input type="text" required onChange={(e) => setFormFields({...formFields, lastDateEn: e.target.value})} className={inputCls} placeholder="June 25, 2026" /></div>
-                    <div className="space-y-1"><label className={labelCls}>अंतिम तिथि (HI)</label><input type="text" required onChange={(e) => setFormFields({...formFields, lastDateHi: e.target.value})} className={inputCls} placeholder="25 जून 2026" /></div>
+                    <div className="space-y-1"><label className={labelCls}>Last Date (EN)</label><input type="text" required value={formFields.lastDateEn || ''} onChange={(e) => setFormFields({...formFields, lastDateEn: e.target.value})} className={inputCls} placeholder="June 25, 2026" /></div>
+                    <div className="space-y-1"><label className={labelCls}>अंतिम तिथि (HI)</label><input type="text" required value={formFields.lastDateHi || ''} onChange={(e) => setFormFields({...formFields, lastDateHi: e.target.value})} className={inputCls} placeholder="25 जून 2026" /></div>
                   </div>
-                  <div className="space-y-1"><label className={labelCls}>Apply Link / URL</label><input type="text" onChange={(e) => setFormFields({...formFields, link: e.target.value})} className={inputCls} placeholder="https://hssc.gov.in" defaultValue="https://hssc.gov.in" /></div>
+                  <div className="space-y-1"><label className={labelCls}>Apply Link / URL</label><input type="text" value={formFields.link || 'https://hssc.gov.in'} onChange={(e) => setFormFields({...formFields, link: e.target.value})} className={inputCls} placeholder="https://hssc.gov.in" /></div>
                 </>
               )}
 
@@ -783,8 +819,10 @@ export default function SuperAdmin({ lang, onLogout }) {
                 type="submit"
                 className="form-button primary w-full mt-4 flex items-center justify-center gap-2"
               >
-                <Plus size={14} strokeWidth={2} />
-                {lang === 'en' ? 'ADD TO DIRECTORY' : 'सूची में जोड़ें'}
+                {isEditing ? <Save size={14} strokeWidth={2} /> : <Plus size={14} strokeWidth={2} />}
+                {isEditing
+                  ? (lang === 'en' ? 'SAVE CHANGES' : 'बदलाव सहेजें')
+                  : (lang === 'en' ? 'ADD TO DIRECTORY' : 'सूची में जोड़ें')}
               </button>
             </form>
           </div>

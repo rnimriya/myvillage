@@ -103,7 +103,7 @@ export default function Education({ lang }) {
                   </div>
                   <button
                     onClick={() => handleCall(school.principal[lang], school.phone)}
-                    className="active-press flex items-center gap-1.5 px-3 py-2 rounded-xl text-white font-bold text-xs shadow-sm"
+                    className="active-press flex items-center gap-1.5 px-3 py-2 rounded-full text-white font-bold text-xs shadow-sm"
                     style={{ background: 'linear-gradient(135deg, #F97316, #EA6C0A)' }}
                   >
                     <Phone size={11} strokeWidth={2} />

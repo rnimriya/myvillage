@@ -1,40 +1,45 @@
 @import "tailwindcss";
 
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
 @theme {
-  /* Phone mockup frame (kept dark) */
-  --color-forest-teal-800: #043f47;
-  --color-forest-teal-900: #022b30;
-  --color-forest-teal-950: #01191d;
+  /* Phone frame — deep forest green */
+  --color-forest-teal-800: #1B5E3B;
+  --color-forest-teal-900: #0F3D27;
+  --color-forest-teal-950: #082318;
 
-  /* App Light Palette */
-  --color-coral:       #E8534A;
-  --color-coral-dark:  #C43B34;
-  --color-coral-light: #FEF0EF;
-  --color-coral-muted: #F9D5D3;
+  /* Primary CTA — Orange */
+  --color-coral:       #F97316;
+  --color-coral-dark:  #EA6C0A;
+  --color-coral-light: #FFF7ED;
+  --color-coral-muted: #FED7AA;
 
-  --color-app-bg:     #F4F6F8;
+  /* App palette — light green tint */
+  --color-app-bg:     #F2F9F5;
   --color-app-card:   #FFFFFF;
-  --color-app-border: #E5E7EB;
-  --color-app-text:   #1C2526;
-  --color-app-muted:  #6B7280;
-  --color-app-subtle: #9CA3AF;
+  --color-app-border: #D4EBD9;
+  --color-app-text:   #0D2B1A;
+  --color-app-muted:  #52786A;
+  --color-app-subtle: #92B4A4;
+
+  /* Brand green */
+  --color-warm-brown:  #0F3D27;
+  --color-warm-hero:   #1B5E3B;
 
   /* Accent palette */
   --color-sky-blue:       #4B91F1;
   --color-sky-blue-light: #EFF6FF;
-  --color-amber-gold:     #F59E0B;
-  --color-amber-light:    #FFFBEB;
-  --color-emerald:        #10B981;
-  --color-emerald-light:  #ECFDF5;
+  --color-amber-gold:     #F97316;
+  --color-amber-light:    #FFF7ED;
+  --color-emerald:        #22C55E;
+  --color-emerald-light:  #DCFCE7;
 
-  /* Legacy aliases so SuperAdmin still compiles */
-  --color-neon-green: #E8534A;
+  /* Legacy aliases */
+  --color-neon-green: #22C55E;
   --color-sky-cyan:   #4B91F1;
-  --color-slate-gray: #9CA3AF;
+  --color-slate-gray: #92B4A4;
 
-  --font-sans: 'Plus Jakarta Sans', sans-serif;
+  --font-sans: 'Inter', system-ui, sans-serif;
 }
 
 @utility no-scrollbar {
@@ -55,7 +60,7 @@
 body {
   background-color: var(--color-forest-teal-950);
   color: var(--color-app-text);
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: 'Inter', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   min-height: 100vh;
   min-height: 100dvh;
@@ -65,6 +70,15 @@ body {
   overflow-x: hidden;
   margin: 0;
   -webkit-tap-highlight-color: transparent;
+}
+
+.bg-app { background-color: var(--color-app-bg); }
+
+html {
+  font-size: 100%;
+  line-height: 1.5;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 @media (max-width: 639px) {
@@ -92,3 +106,59 @@ button, a, [role="button"], input, select, textarea, label {
 .animate-pulse-ring {
   animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
 }
+
+/* Form and button design tokens */
+.form-input {
+  background: var(--color-app-bg);
+  border: 1px solid var(--color-app-border);
+  padding: 0.875rem 1rem;
+  border-radius: 1rem;
+  font-size: 0.9375rem; /* 15px — Inter reads crisply at this size */
+  font-weight: 400;
+  color: var(--color-app-text);
+  outline: none;
+  transition: box-shadow 150ms ease, transform 80ms ease, border-color 150ms ease;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+.form-label {
+  font-size: 0.8125rem; /* 13px */
+  font-weight: 600;
+  color: var(--color-app-text);
+  letter-spacing: 0.01em;
+}
+.form-input:focus {
+  border-color: var(--color-coral);
+  box-shadow: 0 4px 16px rgba(16,185,129,0.10);
+  transform: translateY(-1px);
+}
+.form-input::placeholder { color: var(--color-app-subtle); }
+
+.form-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.875rem 1rem;
+  border-radius: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  transition: transform 80ms ease, box-shadow 150ms ease, background-color 120ms ease;
+  border: none;
+  font-size: 0.9375rem; /* 15px */
+  font-family: 'Inter', system-ui, sans-serif;
+}
+.form-button.primary {
+  background: var(--color-coral);
+  color: white;
+  box-shadow: 0 10px 30px rgba(16,185,129,0.12);
+}
+.form-button.primary:hover { background: var(--color-coral-dark); }
+.form-button.secondary {
+  background: var(--color-app-card);
+  color: var(--color-app-text);
+  border: 1px solid var(--color-app-border);
+}
+.form-button:active { transform: translateY(1px) scale(0.995); }
+
+

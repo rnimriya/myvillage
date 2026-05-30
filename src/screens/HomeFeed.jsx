@@ -1,217 +1,249 @@
 import React, { useState } from 'react';
-import { AlertCircle, Calendar, MessageSquare, Megaphone, ChevronDown, ChevronUp, Briefcase } from 'lucide-react';
+import { Bell, MapPin, Users, FileText, Wrench, GraduationCap, Briefcase, ImageIcon, Calendar, ChevronDown, ChevronUp, BookOpen, Search } from 'lucide-react';
 import { translations } from '../data/translations';
 import { db } from '../data/db';
 
-const SectionLabel = ({ icon: Icon, label, color = 'text-coral' }) => (
-  <div className="flex items-center gap-2 mb-3">
-    <span className="w-1 h-4 rounded-full bg-coral shrink-0" />
-    <Icon size={13} strokeWidth={2} className={color} />
-    <span className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">{label}</span>
-  </div>
+const G = 'linear-gradient(160deg, #082318 0%, #0F3D27 55%, #1B5E3B 100%)';
+
+const Wave = () => (
+  <svg viewBox="0 0 390 36" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"
+    style={{ display: 'block', width: '100%', height: 36 }}>
+    <path d="M0,36 C80,8 200,28 300,10 C350,2 370,18 390,4 L390,36 Z" fill="#F2F9F5"/>
+  </svg>
 );
 
-export default function HomeFeed({ lang }) {
+const catBadge = {
+  heritage:    'bg-purple-100 text-purple-700',
+  development: 'bg-green-100 text-green-800',
+  healthcare:  'bg-red-100 text-red-700',
+  education:   'bg-indigo-100 text-indigo-700',
+  water:       'bg-blue-100 text-blue-700',
+  agriculture: 'bg-yellow-100 text-yellow-800',
+};
+
+const SL = ({ label }) => (
+  <p className="text-[11px] font-semibold tracking-[0.08em] uppercase text-[#1B5E3B] mb-3 select-none">{label}</p>
+);
+
+export default function HomeFeed({ lang, onNavigate }) {
   const t = translations[lang];
-  const [expandedAnnounce, setExpandedAnnounce] = useState(null);
   const [expandedNews, setExpandedNews] = useState(null);
 
-  const announcementsList = db.getAnnouncements();
-  const newsList = db.getNews();
-  const jobsList = db.getJobs();
+  const announcements = db.getAnnouncements();
+  const newsList      = db.getNews();
+  const jobsList      = db.getJobs();
 
-  const toggleAnnounce = (id) => setExpandedAnnounce(expandedAnnounce === id ? null : id);
-  const toggleNews = (id) => setExpandedNews(expandedNews === id ? null : id);
+  const menuItems = [
+    { id: 'directory', label: lang==='en'?'Members':'सदस्य',    Icon: Users,         bg:'#D1FAE5', color:'#065F46' },
+    { id: 'schemes',   label: lang==='en'?'Schemes':'योजनाएं',   Icon: FileText,      bg:'#DBEAFE', color:'#1E40AF' },
+    { id: 'services',  label: lang==='en'?'Services':'सेवाएं',   Icon: Wrench,        bg:'#FEF3C7', color:'#92400E' },
+    { id: 'education', label: lang==='en'?'Education':'शिक्षा',  Icon: GraduationCap, bg:'#FCE7F3', color:'#9D174D' },
+    { id: null,        label: lang==='en'?'News':'समाचार',       Icon: BookOpen,      bg:'#EDE9FE', color:'#4C1D95' },
+    { id: null,        label: lang==='en'?'Jobs':'नौकरी',        Icon: Briefcase,     bg:'#D1FAE5', color:'#064E3B' },
+    { id: null,        label: lang==='en'?'Gallery':'गैलरी',    Icon: ImageIcon,     bg:'#FEF9C3', color:'#78350F' },
+    { id: null,        label: lang==='en'?'Events':'कार्यक्रम', Icon: Calendar,      bg:'#FFE4E6', color:'#9F1239' },
+  ];
 
   return (
-    <div className="flex-1 overflow-y-auto no-scrollbar pb-8 bg-[#F4F6F8] flex flex-col pt-4">
+    <div className="flex-1 overflow-y-auto no-scrollbar flex flex-col bg-[#F2F9F5]">
 
-      {/* 1. Urgent Announcements */}
-      <section className="px-4 pb-2">
-        <SectionLabel icon={Megaphone} label={t.urgentAnnouncements} color="text-amber-500" />
+      {/* ── Green Hero ── */}
+      <div className="relative shrink-0" style={{ background: G }}>
+        <div className="absolute top-0 right-0 w-44 h-44 rounded-full pointer-events-none"
+          style={{ background:'rgba(27,94,59,0.4)', transform:'translate(35%,-35%)' }} />
+        <div className="absolute bottom-8 left-0 w-28 h-28 rounded-full pointer-events-none"
+          style={{ background:'rgba(110,231,183,0.07)', transform:'translate(-25%,0)' }} />
 
-        <div className="space-y-3">
-          {announcementsList.length > 0 ? (
-            announcementsList.map((announce) => {
-              const isExpanded = expandedAnnounce === announce.id;
-              return (
-                <div
-                  key={announce.id}
-                  onClick={() => toggleAnnounce(announce.id)}
-                  className="active-press cursor-pointer bg-white rounded-2xl shadow-sm border border-gray-100 p-4 transition-all hover:shadow-md relative overflow-hidden"
-                >
-                  <div className="absolute top-3 right-3 flex h-2 w-2">
-                    <span className="animate-pulse-ring absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75" />
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500" />
-                  </div>
-
-                  <div className="flex items-start gap-3">
-                    <div className="p-2 rounded-xl bg-amber-50 text-amber-500 mt-0.5 shrink-0">
-                      <AlertCircle size={16} strokeWidth={1.5} />
-                    </div>
-                    <div className="flex-1 pr-5">
-                      <div className="flex items-center gap-2 mb-1.5 flex-wrap">
-                        <span className="text-[9px] font-bold text-amber-600 uppercase tracking-wider bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">
-                          {announce.badge[lang]}
-                        </span>
-                        <span className="text-[10px] text-gray-400 flex items-center gap-1 font-medium">
-                          <Calendar size={9} strokeWidth={1.5} />
-                          {announce.date[lang]}
-                        </span>
-                      </div>
-                      <h3 className="text-sm font-semibold text-gray-900 leading-snug">
-                        {announce.title[lang]}
-                      </h3>
-                      <p className={`text-gray-500 text-xs mt-1.5 leading-relaxed ${isExpanded ? 'block' : 'line-clamp-2'}`}>
-                        {announce.desc[lang]}
-                      </p>
-                      <div className="flex justify-end mt-1.5">
-                        {isExpanded
-                          ? <ChevronUp size={14} className="text-amber-500" />
-                          : <ChevronDown size={14} className="text-amber-500" />}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              );
-            })
-          ) : (
-            <div className="text-center py-6 text-gray-400 text-xs font-medium bg-white rounded-2xl shadow-sm border border-gray-100">
-              📭 {lang === 'en' ? 'No urgent announcements at this time.' : 'इस समय कोई महत्वपूर्ण घोषणा नहीं है।'}
+        <div className="relative z-10 px-5 pt-5 pb-2">
+          {/* Top row */}
+          <div className="flex items-start justify-between mb-4">
+            <div>
+              <p className="text-green-300 text-xs font-semibold">
+                🌱 {lang==='en'?'Good Morning':'शुभ प्रभात'}
+              </p>
+              <h2 className="text-[22px] font-black text-white mt-0.5 leading-tight">
+                {lang==='en'?'Lohari Jatu':'लोहारी जाटू'}
+              </h2>
+              <div className="flex items-center gap-1 mt-0.5">
+                <MapPin size={10} className="text-white/45 shrink-0" />
+                <span className="text-[11px] text-white/45 font-medium">
+                  {lang==='en'?'Charkhi Dadri, Haryana':'चरखी दादरी, हरियाणा'}
+                </span>
+              </div>
             </div>
-          )}
+            <div className="relative shrink-0">
+              <div className="w-10 h-10 rounded-full bg-white/15 border border-white/20 flex items-center justify-center">
+                <Bell size={17} className="text-white" />
+              </div>
+              {announcements.length > 0 && (
+                <span className="absolute -top-1 -right-1 w-[18px] h-[18px] bg-[#F97316] rounded-full text-[8px] font-black text-white flex items-center justify-center shadow-md">
+                  {announcements.length}
+                </span>
+              )}
+            </div>
+          </div>
+
+          {/* Search bar */}
+          <div className="bg-white/12 backdrop-blur-sm border border-white/15 rounded-2xl px-4 py-3 flex items-center gap-3 mb-2">
+            <Search size={15} className="text-white/50 shrink-0" />
+            <span className="text-white/40 text-sm font-medium">
+              {lang==='en'?'Search announcements, news...':'घोषणाएं, समाचार खोजें...'}
+            </span>
+          </div>
         </div>
-      </section>
 
-      <div className="mx-4 my-4 border-t border-gray-200" />
+        <div className="relative z-10"><Wave /></div>
+      </div>
 
-      {/* 2. Village Updates Feed */}
-      <section className="px-4 flex-1">
-        <SectionLabel icon={MessageSquare} label={t.villageUpdates} />
+      {/* ── Content ── */}
+      <div className="flex-1 px-4 -mt-1">
 
-        <div className="space-y-4">
-          {newsList.length > 0 ? (
-            newsList.map((news) => {
-              const isExpanded = expandedNews === news.id;
-              return (
-                <article
-                  key={news.id}
-                  onClick={() => toggleNews(news.id)}
-                  className="active-press cursor-pointer bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-all"
-                >
-                  <div className="h-44 w-full relative bg-gray-100 overflow-hidden">
-                    <img
-                      src={news.image}
-                      alt={news.title[lang]}
-                      className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
-                      loading="lazy"
-                    />
-                    <span className="absolute top-3 left-3 bg-white/90 text-coral font-bold text-[10px] uppercase px-3 py-1 rounded-full tracking-wider shadow-sm">
-                      {news.category[lang]}
-                    </span>
+        {/* Quick Menu */}
+        <div className="grid grid-cols-4 gap-3 mb-5 pt-1">
+          {menuItems.map((item, i) => {
+            const { Icon } = item;
+            return (
+              <button key={i} onClick={() => item.id && onNavigate?.(item.id)}
+                className="active-press flex flex-col items-center gap-1.5">
+                <div className="w-full aspect-square rounded-2xl flex items-center justify-center shadow-sm border border-white/80"
+                  style={{ backgroundColor: item.bg, maxWidth: 60, maxHeight: 60 }}>
+                  <Icon size={22} strokeWidth={1.5} style={{ color: item.color }} />
+                </div>
+                <span className="text-[10px] font-semibold text-[#0D2B1A] text-center leading-tight">{item.label}</span>
+              </button>
+            );
+          })}
+        </div>
+
+        <div className="border-t border-gray-200 mb-4" />
+
+        {/* Announcements */}
+        {announcements.length > 0 && (
+          <section className="mb-4">
+            <SL label={lang==='en'?'URGENT ANNOUNCEMENTS':'आपातकालीन घोषणाएं'} />
+            <div className="space-y-3">
+              {announcements.map((a) => {
+                const key = a.badge.en.toLowerCase();
+                const bc = catBadge[key] || 'bg-orange-100 text-orange-800';
+                return (
+                  <div key={a.id} className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+                    <div className="p-4">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full ${bc}`}>
+                          {a.badge[lang]}
+                        </span>
+                        <span className="text-[10px] text-gray-400 flex items-center gap-1">
+                          <Calendar size={9} strokeWidth={1.5} />
+                          {a.date[lang]}
+                        </span>
+                      </div>
+                      <h3 className="text-sm font-bold text-[#0D2B1A] leading-snug mb-1">{a.title[lang]}</h3>
+                      <p className="text-xs text-gray-500 leading-relaxed">{a.desc[lang]}</p>
+                    </div>
+                    <button className="w-full py-3 text-xs font-bold text-white active-press"
+                      style={{ background:'linear-gradient(135deg,#F97316,#EA6C0A)' }}>
+                      {lang==='en'?"I've read this":'पढ़ लिया'}
+                    </button>
                   </div>
+                );
+              })}
+            </div>
+          </section>
+        )}
 
-                  <div className="p-4">
-                    <div className="flex justify-between items-center text-[11px] mb-2">
-                      <span className="font-semibold text-coral truncate max-w-[150px]">
-                        {news.author[lang]}
-                      </span>
-                      <span className="flex items-center gap-1 font-medium text-gray-400">
-                        <Calendar size={10} strokeWidth={1.5} />
-                        {news.date[lang]}
+        <div className="border-t border-gray-200 mb-4" />
+
+        {/* Village News */}
+        <section className="mb-4">
+          <SL label={lang==='en'?'VILLAGE UPDATES':'गांव की खबरें'} />
+          <div className="space-y-4">
+            {newsList.map((news) => {
+              const isExp = expandedNews === news.id;
+              const key = news.category.en.toLowerCase();
+              const bc = catBadge[key] || 'bg-gray-100 text-gray-600';
+              return (
+                <article key={news.id} onClick={() => setExpandedNews(isExp ? null : news.id)}
+                  className="active-press cursor-pointer bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+                  {news.image && (
+                    <div className="h-40 w-full bg-gray-100 overflow-hidden relative">
+                      <img src={news.image} alt={news.title[lang]} className="w-full h-full object-cover" loading="lazy" />
+                      <span className={`absolute top-3 left-3 text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full shadow-sm ${bc}`}>
+                        {news.category[lang]}
                       </span>
                     </div>
-
-                    <h3 className="text-sm font-semibold text-gray-900 leading-snug tracking-tight mb-1.5">
-                      {news.title[lang]}
-                    </h3>
-
-                    <p className={`text-gray-500 text-xs leading-relaxed ${isExpanded ? 'block' : 'line-clamp-3'}`}>
-                      {news.desc[lang]}
-                    </p>
-
-                    <div className="flex justify-between items-center mt-3 pt-3 border-t border-gray-100 text-xs font-semibold text-coral">
-                      <span>{isExpanded ? (lang === 'en' ? 'Show Less' : 'कम दिखाएं') : (lang === 'en' ? 'Read More' : 'अधिक पढ़ें')}</span>
-                      {isExpanded ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
+                  )}
+                  <div className="p-4">
+                    {!news.image && (
+                      <span className={`inline-block text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full mb-2 ${bc}`}>
+                        {news.category[lang]}
+                      </span>
+                    )}
+                    <div className="flex items-center justify-between mb-1.5">
+                      <span className="text-[11px] font-semibold text-[#1B5E3B] truncate max-w-[140px]">{news.author[lang]}</span>
+                      <span className="text-[10px] text-gray-400 flex items-center gap-1">
+                        <Calendar size={9}/> {news.date[lang]}
+                      </span>
+                    </div>
+                    <h3 className="text-sm font-bold text-[#0D2B1A] leading-snug">{news.title[lang]}</h3>
+                    <p className={`text-xs text-gray-500 mt-1.5 leading-relaxed ${isExp?'':'line-clamp-2'}`}>{news.desc[lang]}</p>
+                    <div className="flex justify-between items-center mt-3 pt-2.5 border-t border-gray-100">
+                      <span className="text-xs font-bold text-[#1B5E3B]">
+                        {isExp?(lang==='en'?'Show Less':'कम दिखाएं'):(lang==='en'?'Read More':'अधिक पढ़ें')}
+                      </span>
+                      {isExp?<ChevronUp size={13} className="text-[#1B5E3B]"/>:<ChevronDown size={13} className="text-[#1B5E3B]"/>}
                     </div>
                   </div>
                 </article>
               );
-            })
-          ) : (
-            <div className="text-center py-12 text-gray-400 text-xs font-medium">
-              📭 {lang === 'en' ? 'No updates in news feed yet.' : 'समाचार फ़ीड में अभी कोई अपडेट नहीं है।'}
-            </div>
-          )}
-        </div>
-      </section>
+            })}
+          </div>
+        </section>
 
-      <div className="mx-4 my-4 border-t border-gray-200" />
-
-      {/* 3. Govt Jobs Feed */}
-      <section className="px-4 pb-6">
-        <SectionLabel icon={Briefcase} label={t.govtJobs} />
-
-        <div className="space-y-4">
-          {jobsList.length > 0 ? (
-            jobsList.map((job) => (
-              <div
-                key={job.id}
-                className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 flex flex-col gap-3"
-              >
-                <div>
-                  <h4 className="text-[10px] font-bold text-sky-blue uppercase tracking-wider">
-                    🏛️ {job.department[lang]}
-                  </h4>
-                  <h3 className="text-sm font-semibold text-gray-900 mt-1 leading-snug">
-                    {job.title[lang]}
-                  </h3>
-                </div>
-
-                <div className="grid grid-cols-2 gap-3 bg-gray-50 border border-gray-100 rounded-xl p-3 text-xs text-gray-500 font-medium">
-                  <div>
-                    <span className="block text-[10px] text-gray-400 uppercase font-bold tracking-wider mb-0.5">
-                      👥 {t.jobVacancies}
-                    </span>
-                    <span className="text-gray-900 font-semibold">{job.vacancies[lang]}</span>
+        {/* Jobs */}
+        {jobsList.length > 0 && (
+          <>
+            <div className="border-t border-gray-200 mb-4" />
+            <section className="pb-8">
+              <SL label={lang==='en'?'GOVERNMENT JOBS':'सरकारी नौकरियां'} />
+              <div className="space-y-4">
+                {jobsList.map((job) => (
+                  <div key={job.id} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 flex flex-col gap-3">
+                    <div>
+                      <h4 className="text-[10px] font-bold text-[#4B91F1] uppercase tracking-wider">🏛️ {job.department[lang]}</h4>
+                      <h3 className="text-sm font-bold text-[#0D2B1A] mt-1 leading-snug">{job.title[lang]}</h3>
+                    </div>
+                    <div className="grid grid-cols-2 gap-3 bg-[#F2F9F5] border border-green-100 rounded-xl p-3 text-xs">
+                      <div>
+                        <span className="block text-[10px] text-gray-400 uppercase font-bold tracking-wider mb-0.5">👥 {t.jobVacancies}</span>
+                        <span className="text-[#0D2B1A] font-bold">{job.vacancies[lang]}</span>
+                      </div>
+                      <div>
+                        <span className="block text-[10px] text-gray-400 uppercase font-bold tracking-wider mb-0.5">🎓 {t.jobEligibility}</span>
+                        <span className="text-[#0D2B1A] font-bold">{job.eligibility[lang]}</span>
+                      </div>
+                      <div className="col-span-2 border-t border-gray-200 pt-2">
+                        <span className="block text-[10px] text-gray-400 uppercase font-bold tracking-wider mb-0.5">📅 {t.jobLastDate}</span>
+                        <span className="text-[#F97316] font-bold">{job.lastDate[lang]}</span>
+                      </div>
+                    </div>
+                    <a href={job.link} target="_blank" rel="noopener noreferrer"
+                      className="text-white font-bold text-xs text-center py-3 rounded-2xl block active-press"
+                      style={{ background:'linear-gradient(135deg,#F97316,#EA6C0A)' }}
+                      onClick={(e) => {
+                        if(job.link.includes('hssc.gov.in')||job.link.includes('hpsc.gov.in')){
+                          e.preventDefault();
+                          alert(`Redirecting to ${job.link}...`);
+                        }
+                      }}>
+                      🔗 {t.jobApplyBtn}
+                    </a>
                   </div>
-                  <div>
-                    <span className="block text-[10px] text-gray-400 uppercase font-bold tracking-wider mb-0.5">
-                      🎓 {t.jobEligibility}
-                    </span>
-                    <span className="text-gray-900 font-semibold">{job.eligibility[lang]}</span>
-                  </div>
-                  <div className="col-span-2 border-t border-gray-200 pt-2">
-                    <span className="block text-[10px] text-gray-400 uppercase font-bold tracking-wider mb-0.5">
-                      📅 {t.jobLastDate}
-                    </span>
-                    <span className="text-amber-500 font-bold">{job.lastDate[lang]}</span>
-                  </div>
-                </div>
-
-                <a
-                  href={job.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="bg-coral hover:bg-coral-dark text-white font-bold text-xs text-center py-2.5 rounded-xl active-press cursor-pointer uppercase tracking-wider block transition-colors"
-                  onClick={(e) => {
-                    if (job.link.includes('hssc.gov.in') || job.link.includes('hpsc.gov.in')) {
-                      e.preventDefault();
-                      alert(`${lang === 'en' ? 'Redirecting to Haryana Recruitment Portal' : 'हरियाणा भर्ती पोर्टल पर निर्देशित किया जा रहा है'} (${job.link})...`);
-                    }
-                  }}
-                >
-                  🔗 {t.jobApplyBtn}
-                </a>
+                ))}
               </div>
-            ))
-          ) : (
-            <div className="text-center py-8 text-gray-400 text-xs font-medium">
-              📭 {t.noJobs}
-            </div>
-          )}
-        </div>
-      </section>
+            </section>
+          </>
+        )}
+      </div>
     </div>
   );
 }

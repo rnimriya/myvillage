@@ -17,6 +17,16 @@ export default {
           800: '#065f46',
           900: '#064e3b',
         },
+        // Provide legacy alias names used throughout the codebase
+        coral: {
+          DEFAULT: '#10b981',
+          light: '#ecfdf5',
+          dark: '#047857',
+          muted: '#bbf7d0'
+        },
+        'coral-dark': '#047857',
+        'coral-light': '#ecfdf5',
+        'coral-muted': '#bbf7d0',
         saffron: {
           50: '#fff7ed',
           100: '#ffedd5',
@@ -26,7 +36,7 @@ export default {
         }
       },
       fontFamily: {
-        sans: ['Outfit', 'Inter', 'sans-serif'],
+        sans: ['Poppins', 'Inter', 'sans-serif'],
       }
     },
   },

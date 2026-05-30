@@ -44,7 +44,7 @@ export default function App() {
 
   const renderActiveScreen = () => {
     switch (activeTab) {
-      case 'home':      return <HomeFeed lang={lang} />;
+      case 'home':      return <HomeFeed lang={lang} onNavigate={setActiveTab} />;
       case 'schemes':   return <Schemes lang={lang} />;
       case 'directory': return <Directory lang={lang} />;
       case 'services':  return (
@@ -80,7 +80,7 @@ export default function App() {
         activeTab={activeTab}
       />
 
-      <main className="flex-1 overflow-hidden flex flex-col bg-[#F4F6F8]">
+      <main className="flex-1 overflow-hidden flex flex-col bg-[#F2F9F5]">
         {renderActiveScreen()}
       </main>
 

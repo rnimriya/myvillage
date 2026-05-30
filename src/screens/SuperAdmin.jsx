@@ -139,16 +139,16 @@ export default function SuperAdmin({ lang, onLogout }) {
     setFormFields({});
   };
 
-  const inputCls = "w-full bg-gray-50 border border-gray-200 focus:border-coral text-gray-800 text-xs rounded-xl p-2.5 outline-none placeholder-gray-400 transition-colors";
-  const labelCls = "text-[9px] font-bold text-slate-500 uppercase tracking-wider";
+  const inputCls = "form-input w-full text-sm p-2.5";
+  const labelCls = "text-sm font-bold text-[#8A7560] uppercase tracking-wider";
 
   return (
-    <div className="flex-1 overflow-hidden flex flex-col bg-slate-50">
+    <div className="flex-1 overflow-hidden flex flex-col bg-[#FAF7F2]">
 
       {/* Dark header banner */}
       <div
         className="px-5 pt-4 pb-4 shrink-0 select-none"
-        style={{ background: 'linear-gradient(135deg, #E8534A 0%, #C43B34 100%)' }}
+        style={{ background: 'linear-gradient(160deg, #1A0F05 0%, #3D2008 35%, #7A4E1A 65%, #C8973A 100%)' }}
       >
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-3">
@@ -175,7 +175,7 @@ export default function SuperAdmin({ lang, onLogout }) {
       </div>
 
       {/* Tab navigation */}
-      <div className="px-4 py-3 flex gap-2 overflow-x-auto no-scrollbar shrink-0 select-none bg-white border-b border-slate-200 shadow-sm">
+      <div className="px-4 py-3 flex gap-2 overflow-x-auto no-scrollbar shrink-0 select-none bg-white border-b border-[#E8E0D4] shadow-sm">
         {[
           { id: 'announcements', label: lang === 'en' ? 'Alerts' : 'घोषणाएं', icon: Megaphone },
           { id: 'news', label: lang === 'en' ? 'News' : 'समाचार', icon: MessageSquare },
@@ -195,7 +195,7 @@ export default function SuperAdmin({ lang, onLogout }) {
               className={`active-press flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition-all border whitespace-nowrap ${
                 isActive
                   ? 'bg-forest-teal-700 border-forest-teal-700 text-white shadow-md shadow-forest-teal-700/20'
-                  : 'bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100 hover:text-slate-700'
+                  : 'bg-[#FAF7F2] border-[#E8E0D4] text-[#8A7560] hover:bg-[#F5ECD8] hover:text-slate-700'
               }`}
             >
               <Icon size={11} strokeWidth={1.5} />
@@ -206,8 +206,8 @@ export default function SuperAdmin({ lang, onLogout }) {
       </div>
 
       {/* Section action bar */}
-      <div className="px-5 py-2.5 flex justify-between items-center bg-slate-100 border-b border-slate-200 select-none shrink-0">
-        <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+      <div className="px-5 py-2.5 flex justify-between items-center bg-[#F5ECD8] border-b border-[#E8E0D4] select-none shrink-0">
+        <span className="text-[10px] font-bold text-[#8A7560] uppercase tracking-widest">
           {lang === 'en' ? `Manage ${activeTab}` : `${activeTab} प्रबंधित करें`}
         </span>
         {activeTab !== 'providers' && activeTab !== 'kyc' && (
@@ -222,17 +222,17 @@ export default function SuperAdmin({ lang, onLogout }) {
       </div>
 
       {/* Scrollable list */}
-      <div className="flex-1 overflow-y-auto no-scrollbar px-4 py-4 space-y-3 bg-slate-50">
+      <div className="flex-1 overflow-y-auto no-scrollbar px-4 py-4 space-y-3 bg-[#FAF7F2]">
 
         {/* A. ANNOUNCEMENTS */}
         {activeTab === 'announcements' && announcements.map((item) => (
-          <div key={item.id} className="bg-white border border-slate-200 rounded-2xl p-4 flex justify-between items-center gap-4 shadow-sm">
+          <div key={item.id} className="bg-white border border-[#E8E0D4] rounded-2xl p-4 flex justify-between items-center gap-4 shadow-sm">
             <div className="min-w-0">
               <span className="text-[9px] font-bold text-amber-600 uppercase tracking-wider bg-amber-50 px-2 py-0.5 rounded-lg border border-amber-200">
                 {item.badge[lang]}
               </span>
-              <h4 className="text-sm font-bold text-slate-800 mt-1.5 truncate">{item.title[lang]}</h4>
-              <p className="text-xs text-slate-500 truncate mt-0.5">{item.desc[lang]}</p>
+              <h4 className="text-sm font-bold text-[#2D1F0E] mt-1.5 truncate">{item.title[lang]}</h4>
+              <p className="text-xs text-[#8A7560] truncate mt-0.5">{item.desc[lang]}</p>
             </div>
             <button
               onClick={() => handleDelete(item.id, 'announcements')}
@@ -245,15 +245,15 @@ export default function SuperAdmin({ lang, onLogout }) {
 
         {/* B. NEWS FEED */}
         {activeTab === 'news' && news.map((item) => (
-          <div key={item.id} className="bg-white border border-slate-200 rounded-2xl p-4 flex justify-between items-center gap-4 shadow-sm">
+          <div key={item.id} className="bg-white border border-[#E8E0D4] rounded-2xl p-4 flex justify-between items-center gap-4 shadow-sm">
             <div className="flex items-center gap-3 min-w-0">
-              <img src={item.image} alt="" className="w-10 h-10 rounded-xl object-cover bg-slate-100 shrink-0" />
+              <img src={item.image} alt="" className="w-10 h-10 rounded-xl object-cover bg-[#F5ECD8] shrink-0" />
               <div className="min-w-0">
                 <span className="text-[9px] font-bold text-sky-600 uppercase bg-sky-50 px-2 py-0.5 rounded-lg border border-sky-100">
                   {item.category[lang]}
                 </span>
-                <h4 className="text-sm font-bold text-slate-800 mt-1 truncate">{item.title[lang]}</h4>
-                <p className="text-xs text-slate-500 truncate">✏️ {item.author[lang]}</p>
+                <h4 className="text-sm font-bold text-[#2D1F0E] mt-1 truncate">{item.title[lang]}</h4>
+                <p className="text-xs text-[#8A7560] truncate">✏️ {item.author[lang]}</p>
               </div>
             </div>
             <button
@@ -267,13 +267,13 @@ export default function SuperAdmin({ lang, onLogout }) {
 
         {/* C. SCHEMES */}
         {activeTab === 'schemes' && schemes.map((item) => (
-          <div key={item.id} className="bg-white border border-slate-200 rounded-2xl p-4 flex justify-between items-center gap-4 shadow-sm">
+          <div key={item.id} className="bg-white border border-[#E8E0D4] rounded-2xl p-4 flex justify-between items-center gap-4 shadow-sm">
             <div className="min-w-0">
               <span className="text-[9px] font-bold text-emerald-600 uppercase tracking-wider bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-lg">
                 {item.category.toUpperCase()}
               </span>
-              <h4 className="text-sm font-bold text-slate-800 mt-1.5 truncate">{item.name[lang]}</h4>
-              <p className="text-xs text-slate-500 truncate mt-0.5">🏢 {item.department[lang]}</p>
+              <h4 className="text-sm font-bold text-[#2D1F0E] mt-1.5 truncate">{item.name[lang]}</h4>
+              <p className="text-xs text-[#8A7560] truncate mt-0.5">🏢 {item.department[lang]}</p>
             </div>
             <button
               onClick={() => handleDelete(item.id, 'schemes')}
@@ -286,15 +286,15 @@ export default function SuperAdmin({ lang, onLogout }) {
 
         {/* D. LEADERS */}
         {activeTab === 'leaders' && leaders.map((item) => (
-          <div key={item.id} className="bg-white border border-slate-200 rounded-2xl p-4 flex justify-between items-center gap-4 shadow-sm">
+          <div key={item.id} className="bg-white border border-[#E8E0D4] rounded-2xl p-4 flex justify-between items-center gap-4 shadow-sm">
             <div className="flex items-center gap-3 min-w-0">
-              <div className="w-10 h-10 rounded-full border border-slate-200 bg-slate-100 flex items-center justify-center text-lg shrink-0">
+              <div className="w-10 h-10 rounded-full border border-[#E8E0D4] bg-[#F5ECD8] flex items-center justify-center text-lg shrink-0">
                 👤
               </div>
               <div className="min-w-0">
-                <h4 className="text-sm font-bold text-slate-800 truncate">{item.name[lang]}</h4>
+                <h4 className="text-sm font-bold text-[#2D1F0E] truncate">{item.name[lang]}</h4>
                 <p className="text-[10px] font-bold text-emerald-600 uppercase tracking-wide">{item.role[lang]}</p>
-                <p className="text-xs text-slate-500 truncate mt-0.5">📞 {item.phone} • 📍 {item.ward[lang]}</p>
+                <p className="text-xs text-[#8A7560] truncate mt-0.5">📞 {item.phone} • 📍 {item.ward[lang]}</p>
               </div>
             </div>
             <button
@@ -308,15 +308,15 @@ export default function SuperAdmin({ lang, onLogout }) {
 
         {/* E. PROVIDERS MODERATION */}
         {activeTab === 'providers' && providers.map((item) => (
-          <div key={item.id} className="bg-white border border-slate-200 rounded-2xl p-4 flex flex-col gap-3 shadow-sm">
+          <div key={item.id} className="bg-white border border-[#E8E0D4] rounded-2xl p-4 flex flex-col gap-3 shadow-sm">
             <div className="flex justify-between items-center gap-4 w-full">
               <div className="flex items-center gap-3 min-w-0">
-                <div className="w-10 h-10 rounded-2xl border border-slate-200 bg-slate-100 flex items-center justify-center text-lg shrink-0">
+                <div className="w-10 h-10 rounded-2xl border border-[#E8E0D4] bg-[#F5ECD8] flex items-center justify-center text-lg shrink-0">
                   {categoryIcons[item.category] || '👤'}
                 </div>
                 <div className="min-w-0">
                   <div className="flex items-center gap-1.5 flex-wrap">
-                    <h4 className="text-sm font-bold text-slate-800 truncate">{item.name[lang]}</h4>
+                    <h4 className="text-sm font-bold text-[#2D1F0E] truncate">{item.name[lang]}</h4>
                     {item.status === 'approved' ? (
                       <span className="text-[8px] font-bold text-emerald-600 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded-lg">LIVE</span>
                     ) : (
@@ -324,7 +324,7 @@ export default function SuperAdmin({ lang, onLogout }) {
                     )}
                   </div>
                   <p className="text-[9px] font-bold text-sky-600 uppercase tracking-wider mt-0.5">🛠️ {item.category.toUpperCase()}</p>
-                  <p className="text-xs text-slate-500 mt-0.5">📞 {item.phone} • {item.experience[lang]}</p>
+                  <p className="text-xs text-[#8A7560] mt-0.5">📞 {item.phone} • {item.experience[lang]}</p>
                 </div>
               </div>
               <div className="flex gap-2 shrink-0">
@@ -353,7 +353,7 @@ export default function SuperAdmin({ lang, onLogout }) {
                 <p className="text-[8px] font-bold text-amber-600 uppercase tracking-wider mb-1">
                   ⚠️ Audit Photo:
                 </p>
-                <div className="rounded-xl overflow-hidden border border-slate-200 bg-slate-100 aspect-video max-h-36">
+                <div className="rounded-xl overflow-hidden border border-[#E8E0D4] bg-[#F5ECD8] aspect-video max-h-36">
                   <img
                     src={item.workImages?.[0] || item.workImage}
                     alt="Audit"
@@ -368,13 +368,13 @@ export default function SuperAdmin({ lang, onLogout }) {
 
         {/* F. SCHOOLS */}
         {activeTab === 'schools' && schools.map((item) => (
-          <div key={item.id} className="bg-white border border-slate-200 rounded-2xl p-4 flex justify-between items-center gap-4 shadow-sm">
+          <div key={item.id} className="bg-white border border-[#E8E0D4] rounded-2xl p-4 flex justify-between items-center gap-4 shadow-sm">
             <div className="min-w-0">
               <span className="text-[9px] font-bold text-sky-600 uppercase tracking-wider bg-sky-50 px-2 py-0.5 rounded-lg border border-sky-100">
                 {item.type.toUpperCase()}
               </span>
-              <h4 className="text-sm font-bold text-slate-800 mt-1.5 truncate">{item.name[lang]}</h4>
-              <p className="text-xs text-slate-500 truncate mt-0.5">👤 {item.principal[lang]}</p>
+              <h4 className="text-sm font-bold text-[#2D1F0E] mt-1.5 truncate">{item.name[lang]}</h4>
+              <p className="text-xs text-[#8A7560] truncate mt-0.5">👤 {item.principal[lang]}</p>
             </div>
             <button
               onClick={() => handleDelete(item.id, 'schools')}
@@ -387,13 +387,13 @@ export default function SuperAdmin({ lang, onLogout }) {
 
         {/* G. JOBS */}
         {activeTab === 'jobs' && jobs.map((item) => (
-          <div key={item.id} className="bg-white border border-slate-200 rounded-2xl p-4 flex justify-between items-center gap-4 shadow-sm">
+          <div key={item.id} className="bg-white border border-[#E8E0D4] rounded-2xl p-4 flex justify-between items-center gap-4 shadow-sm">
             <div className="min-w-0 flex-1">
               <span className="text-[9px] font-bold text-emerald-600 uppercase tracking-wider bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-lg">
                 {item.department[lang]}
               </span>
-              <h4 className="text-sm font-bold text-slate-800 mt-1.5 truncate">{item.title[lang]}</h4>
-              <p className="text-xs text-slate-500 truncate mt-0.5">👥 {item.vacancies[lang]} | {item.eligibility[lang]}</p>
+              <h4 className="text-sm font-bold text-[#2D1F0E] mt-1.5 truncate">{item.title[lang]}</h4>
+              <p className="text-xs text-[#8A7560] truncate mt-0.5">👥 {item.vacancies[lang]} | {item.eligibility[lang]}</p>
             </div>
             <button
               onClick={() => handleDelete(item.id, 'jobs')}
@@ -406,17 +406,17 @@ export default function SuperAdmin({ lang, onLogout }) {
 
         {/* H. KYC MODERATION */}
         {activeTab === 'kyc' && kycProviders.map((item) => (
-          <div key={item.id} className="bg-white border border-slate-200 rounded-2xl p-4 flex flex-col gap-3 shadow-sm">
+          <div key={item.id} className="bg-white border border-[#E8E0D4] rounded-2xl p-4 flex flex-col gap-3 shadow-sm">
             <div className="flex items-start gap-3">
-              <div className="w-10 h-10 rounded-full border border-slate-200 bg-slate-100 flex items-center justify-center overflow-hidden shrink-0 text-xl">
+              <div className="w-10 h-10 rounded-full border border-[#E8E0D4] bg-[#F5ECD8] flex items-center justify-center overflow-hidden shrink-0 text-xl">
                 {item.profilePhoto
                   ? <img src={item.profilePhoto} alt="" className="w-full h-full object-cover" />
                   : categoryIcons[item.category] || '👤'}
               </div>
               <div className="flex-1 min-w-0">
-                <h4 className="text-sm font-bold text-slate-800 truncate">{item.name[lang]}</h4>
+                <h4 className="text-sm font-bold text-[#2D1F0E] truncate">{item.name[lang]}</h4>
                 <p className="text-[9px] font-bold text-sky-600 uppercase tracking-wider mt-0.5">🛠️ {item.category.toUpperCase()}</p>
-                <p className="text-xs text-slate-500 mt-0.5">📞 {item.phone}</p>
+                <p className="text-xs text-[#8A7560] mt-0.5">📞 {item.phone}</p>
               </div>
               <span className="text-[8px] font-bold text-amber-600 bg-amber-50 border border-amber-200 px-1.5 py-0.5 rounded-lg shrink-0 self-start">
                 {item.kycDocType?.toUpperCase() || 'DOC'}
@@ -424,7 +424,7 @@ export default function SuperAdmin({ lang, onLogout }) {
             </div>
 
             {item.kycDocument && (
-              <div className="border border-slate-200 rounded-xl overflow-hidden bg-slate-50 aspect-video">
+              <div className="border border-[#E8E0D4] rounded-xl overflow-hidden bg-[#FAF7F2] aspect-video">
                 <img src={item.kycDocument} alt="KYC Document" className="w-full h-full object-contain" loading="lazy" />
               </div>
             )}
@@ -465,10 +465,10 @@ export default function SuperAdmin({ lang, onLogout }) {
 
       {/* KYC REJECT MODAL */}
       {showKYCRejectModal && (
-        <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-5">
-          <div className="bg-white border border-slate-200 rounded-2xl w-full max-w-sm p-5 flex flex-col gap-4 shadow-2xl">
+        <div className="absolute inset-0 bg-[#2D1F0E]/70 backdrop-blur-sm z-50 flex items-center justify-center p-5">
+          <div className="bg-white border border-[#E8E0D4] rounded-2xl w-full max-w-sm p-5 flex flex-col gap-4 shadow-2xl">
             <div className="flex items-center justify-between">
-              <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider">
+              <h3 className="text-sm font-bold text-[#2D1F0E] uppercase tracking-wider">
                 {lang === 'en' ? 'Reject KYC' : 'KYC अस्वीकार करें'}
               </h3>
               <button type="button" onClick={() => setShowKYCRejectModal(false)} className="text-slate-400 hover:text-slate-600">
@@ -487,7 +487,7 @@ export default function SuperAdmin({ lang, onLogout }) {
             </div>
             <div className="flex gap-3">
               <button onClick={() => setShowKYCRejectModal(false)}
-                className="flex-1 py-2.5 bg-slate-100 border border-slate-200 text-slate-600 font-bold text-xs rounded-xl">
+                className="flex-1 py-2.5 bg-[#F5ECD8] border border-[#E8E0D4] text-slate-600 font-bold text-xs rounded-xl">
                 {lang === 'en' ? 'Cancel' : 'रद्द करें'}
               </button>
               <button onClick={handleRejectKYC}
@@ -502,11 +502,11 @@ export default function SuperAdmin({ lang, onLogout }) {
 
       {/* ADD FORM MODAL */}
       {showAddModal && (
-        <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-5 overflow-y-auto">
-          <div className="bg-white border border-slate-200 rounded-3xl w-full max-w-sm flex flex-col max-h-[92%] overflow-hidden shadow-2xl">
+        <div className="absolute inset-0 bg-[#2D1F0E]/70 backdrop-blur-sm z-50 flex items-center justify-center p-5 overflow-y-auto">
+          <div className="bg-white border border-[#E8E0D4] rounded-3xl w-full max-w-sm flex flex-col max-h-[92%] overflow-hidden shadow-2xl">
             {/* Modal header */}
-            <div className="px-5 py-4 border-b border-slate-100 flex justify-between items-center select-none bg-slate-50 shrink-0 rounded-t-3xl">
-              <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider">
+            <div className="px-5 py-4 border-b border-slate-100 flex justify-between items-center select-none bg-[#FAF7F2] shrink-0 rounded-t-3xl">
+              <h3 className="text-sm font-bold text-[#2D1F0E] uppercase tracking-wider">
                 {lang === 'en' ? `Add ${activeTab}` : `नया ${activeTab} जोड़ें`}
               </h3>
               <button type="button" onClick={() => setShowAddModal(false)} className="text-slate-400 hover:text-slate-600 transition-colors">
@@ -671,7 +671,7 @@ export default function SuperAdmin({ lang, onLogout }) {
 
               <button
                 type="submit"
-                className="active-press w-full py-3 bg-forest-teal-700 hover:bg-forest-teal-600 text-white rounded-xl font-bold text-xs tracking-wider shadow-md transition-all flex items-center justify-center gap-2 mt-4"
+                className="form-button primary w-full mt-4 flex items-center justify-center gap-2"
               >
                 <Plus size={14} strokeWidth={2} />
                 {lang === 'en' ? 'ADD TO DIRECTORY' : 'सूची में जोड़ें'}

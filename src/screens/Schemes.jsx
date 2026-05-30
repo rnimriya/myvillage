@@ -42,14 +42,14 @@ export default function Schemes({ lang }) {
   const toggleExpand = (id) => setExpandedScheme(expandedScheme === id ? null : id);
 
   return (
-    <div className="flex-1 overflow-y-auto no-scrollbar pb-8 bg-[#F4F6F8] flex flex-col pt-4">
+    <div className="flex-1 overflow-y-auto no-scrollbar pb-8 bg-[#FAF7F2] flex flex-col pt-4">
 
       {/* Header */}
       <div className="px-4 pb-3 flex flex-col gap-3">
         <div className="flex items-center gap-2">
           <span className="w-1 h-4 rounded-full bg-coral shrink-0" />
           <Sparkles size={13} strokeWidth={2} className="text-coral" />
-          <span className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">{t.schemeSectionTitle}</span>
+          <span className="text-sm font-bold text-gray-400 uppercase tracking-widest">{t.schemeSectionTitle}</span>
         </div>
 
         {/* Search */}
@@ -75,33 +75,28 @@ export default function Schemes({ lang }) {
         </div>
       </div>
 
-      {/* Category Pills */}
-      <div className="px-4 mb-4 select-none">
-        <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1">
-          {categories.map((cat) => {
-            const isSelected = selectedCategory === cat.id;
-            return (
-              <button
-                key={cat.id}
-                onClick={() => setSelectedCategory(cat.id)}
-                className={`active-press flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all border shrink-0 ${
-                  isSelected
-                    ? 'bg-coral border-coral text-white shadow-sm shadow-coral/25'
-                    : 'bg-white border-gray-200 text-gray-600 hover:border-coral/40'
-                }`}
-              >
-                <span>{cat.icon}</span>
-                <span>{cat.label}</span>
-              </button>
-            );
-          })}
-        </div>
+      {/* Category selector */}
+      <div className="px-4 mb-4">
+        <label className="block text-sm font-bold text-gray-400 uppercase tracking-wider mb-2">
+          {lang === 'en' ? 'Category' : 'वर्ग'}
+        </label>
+        <select
+          value={selectedCategory}
+          onChange={(e) => setSelectedCategory(e.target.value)}
+          className="form-input w-full text-sm"
+        >
+          {categories.map((cat) => (
+            <option key={cat.id} value={cat.id}>
+              {cat.label}
+            </option>
+          ))}
+        </select>
       </div>
 
       {/* Count indicator */}
       {(searchQuery || selectedCategory !== 'all') && (
         <div className="px-4 mb-3">
-          <p className="text-[10px] text-gray-400 font-medium">
+          <p className="text-sm text-gray-400 font-medium">
             {filteredSchemes.length} {lang === 'en' ? 'scheme(s) found' : 'योजनाएं मिलीं'}
           </p>
         </div>
@@ -126,18 +121,18 @@ export default function Schemes({ lang }) {
                 >
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap mb-2">
-                      <span className="text-[9px] font-bold text-sky-600 tracking-wider uppercase bg-sky-50 px-2.5 py-1 rounded-lg border border-sky-200">
+                      <span className="text-sm font-bold text-sky-600 tracking-wider uppercase bg-sky-50 px-2.5 py-1 rounded-lg border border-sky-200">
                         🏢 {scheme.department[lang]}
                       </span>
-                      <span className={`text-[9px] font-bold uppercase tracking-wider px-2 py-1 rounded-lg border ${catColor}`}>
+                      <span className={`text-sm font-bold uppercase tracking-wider px-2 py-1 rounded-lg border ${catColor}`}>
                         {categories.find(c => c.id === scheme.category)?.icon} {scheme.category}
                       </span>
                     </div>
-                    <h3 className="text-[13px] font-bold text-gray-900 leading-snug">
+                    <h3 className="text-base font-bold text-gray-900 leading-snug">
                       {scheme.name[lang]}
                     </h3>
                     {!isExpanded && (
-                      <p className="text-[11px] text-gray-500 mt-1.5 line-clamp-2 leading-relaxed">
+                      <p className="text-sm text-gray-500 mt-1.5 line-clamp-2 leading-relaxed">
                         {scheme.benefits[lang]}
                       </p>
                     )}
@@ -156,10 +151,10 @@ export default function Schemes({ lang }) {
                         <Gift size={14} strokeWidth={1.5} />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h4 className="text-[10px] font-bold text-emerald-700 tracking-wider uppercase mb-1">
+                        <h4 className="text-sm font-bold text-emerald-700 tracking-wider uppercase mb-1">
                           {t.benefits}
                         </h4>
-                        <p className="text-gray-600 text-xs leading-relaxed">{scheme.benefits[lang]}</p>
+                        <p className="text-gray-600 text-sm leading-relaxed">{scheme.benefits[lang]}</p>
                       </div>
                     </div>
 
@@ -168,16 +163,16 @@ export default function Schemes({ lang }) {
                         <CheckCircle size={14} strokeWidth={1.5} />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h4 className="text-[10px] font-bold text-amber-700 tracking-wider uppercase mb-1">
+                        <h4 className="text-sm font-bold text-amber-700 tracking-wider uppercase mb-1">
                           {t.eligibility}
                         </h4>
-                        <p className="text-gray-600 text-xs leading-relaxed">{scheme.eligibility[lang]}</p>
+                        <p className="text-gray-600 text-sm leading-relaxed">{scheme.eligibility[lang]}</p>
                       </div>
                     </div>
 
                     <button
                       onClick={(e) => { e.stopPropagation(); alert(`${t.applyNow}: ${scheme.name[lang]}`); }}
-                      className="active-press w-full py-3 bg-coral hover:bg-coral-dark text-white rounded-xl font-bold text-xs tracking-wider transition-colors flex items-center justify-center gap-2 shadow-sm shadow-coral/25"
+                      className="form-button primary w-full flex items-center justify-center gap-2 text-sm"
                     >
                       <FileText size={13} strokeWidth={2} />
                       {t.applyNow}
@@ -192,9 +187,9 @@ export default function Schemes({ lang }) {
             <span className="text-3xl">📭</span>
             <span>{t.noResults}</span>
             {searchQuery && (
-              <button
-                onClick={() => setSearchQuery('')}
-                className="text-xs text-coral font-semibold mt-1 active-press"
+                <button
+                  onClick={() => setSearchQuery('')}
+                  className="text-sm text-coral font-semibold mt-1 active-press"
               >
                 {lang === 'en' ? 'Clear search' : 'खोज साफ करें'}
               </button>

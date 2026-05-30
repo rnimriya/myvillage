@@ -28,7 +28,7 @@ export default function Education({ lang }) {
   };
 
   return (
-    <div className="flex-1 overflow-y-auto no-scrollbar pb-8 bg-[#F4F6F8] flex flex-col pt-4">
+    <div className="flex-1 overflow-y-auto no-scrollbar pb-8 bg-[#FAF7F2] flex flex-col pt-4">
 
       {/* Header */}
       <div className="px-4 pb-4 flex flex-col gap-2">

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Languages, User, Key, Leaf } from 'lucide-react';
+import { Languages, User, Key, TreePine } from 'lucide-react';
 import { translations } from '../data/translations';
 
 export default function Header({ lang, onLangChange, session, onPortalClick }) {
@@ -8,7 +8,7 @@ export default function Header({ lang, onLangChange, session, onPortalClick }) {
   return (
     <header
       className="w-full shrink-0 select-none"
-      style={{ background: 'linear-gradient(135deg, #E8534A 0%, #C43B34 100%)' }}
+      style={{ background: 'linear-gradient(160deg, #082318 0%, #0F3D27 55%, #1B5E3B 100%)' }}
     >
       <div
         className="px-4 flex items-center justify-between gap-3"
@@ -17,13 +17,13 @@ export default function Header({ lang, onLangChange, session, onPortalClick }) {
         {/* Brand */}
         <div className="flex items-center gap-2.5 min-w-0">
           <div className="w-9 h-9 rounded-2xl bg-white/20 border border-white/30 flex items-center justify-center shrink-0">
-            <Leaf size={17} strokeWidth={2} className="text-white" />
+            <TreePine size={17} strokeWidth={2} className="text-white" />
           </div>
           <div className="min-w-0">
             <h1 className="text-[15px] font-bold text-white leading-tight truncate">
               {t.appTitle}
             </h1>
-            <p className="text-[9px] text-white/65 font-medium uppercase tracking-widest mt-0.5">
+            <p className="text-[10px] text-white/65 font-semibold uppercase tracking-[0.12em] mt-0.5">
               {t.appSubtitle}
             </p>
           </div>
